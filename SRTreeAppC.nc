@@ -13,9 +13,6 @@ implementation{
 #endif
 	components MainC, LedsC, ActiveMessageC, SerialActiveMessageC;
 	components new TimerMilliC() as RoutingMsgTimerC;
-	components new TimerMilliC() as Led0TimerC;
-	components new TimerMilliC() as Led1TimerC;
-	components new TimerMilliC() as Led2TimerC;
 	components new TimerMilliC() as LostTaskTimerC;
 	
 	components new AMSenderC(AM_ROUTINGMSG) as RoutingSenderC;
@@ -34,12 +31,8 @@ implementation{
 	SRTreeC.Boot->MainC.Boot;
 	
 	SRTreeC.RadioControl -> ActiveMessageC;
-	SRTreeC.Leds-> LedsC;
 	
 	SRTreeC.RoutingMsgTimer->RoutingMsgTimerC;
-	SRTreeC.Led0Timer-> Led0TimerC;
-	SRTreeC.Led1Timer-> Led1TimerC;
-	SRTreeC.Led2Timer-> Led2TimerC;
 	SRTreeC.LostTaskTimer->LostTaskTimerC;
 	
 	SRTreeC.RoutingPacket->RoutingSenderC.Packet;
