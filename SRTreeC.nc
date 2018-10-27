@@ -402,7 +402,6 @@ ___________________________________________________*/
 	
 	task void sendRoutingTask()
 	{
-		//uint8_t skip;
 		uint8_t mlen;
 		uint16_t mdest;
 		error_t sendDone;
@@ -410,113 +409,86 @@ ___________________________________________________*/
 		
 		if (call RoutingSendQueue.empty())
 		{
-			dbg("SRTreeC","sendRoutingTask(): Q is empty!\n");
-
+			dbg("SRTreeC","-RoutingSendT- Queue is empty.\n");
 			return;
 		}
-		
-		
 		if(RoutingSendBusy)
 		{
-			dbg("SRTreeC","sendRoutingTask(): RoutingSendBusy= TRUE!!!\n");
-
+			dbg("SRTreeC","-RoutingSendT- RoutingRadio is Busy.\n");
 			setLostRoutingSendTask(TRUE);
 			return;
 		}
 		
 		radioRoutingSendPkt = call RoutingSendQueue.dequeue();
 		
-		//call Leds.led2On();
-		//call Led2Timer.startOneShot(TIMER_LEDS_MILLI);
 		mlen= call RoutingPacket.payloadLength(&radioRoutingSendPkt);
 		mdest=call RoutingAMPacket.destination(&radioRoutingSendPkt);
+
 		if(mlen!=sizeof(RoutingMsg))
 		{
-			dbg("SRTreeC","\t\tsendRoutingTask(): Unknown message!!!\n");
-
+			dbg("SRTreeC","-RoutingSendT- Unknown message. \n");
 			return;
 		}
+
 		sendDone=call RoutingAMSend.send(mdest,&radioRoutingSendPkt,mlen);
 		
 		if ( sendDone== SUCCESS)
 		{
-			dbg("SRTreeC","sendRoutingTask(): Send returned success!!!\n");
-
+			dbg("SRTreeC","-RoutingSendT- Send was successfull\n");
 			setRoutingSendBusy(TRUE);
 		}
 		else
 		{
-			dbg("SRTreeC","send failed!!!\n");
-
-			//setRoutingSendBusy(FALSE);
+			dbg("SRTreeC","-RoutingSendT- Send failed!\n");
 		}
 	}
-	/**
-	 * dequeues a message and sends it
-	 */
+
 	task void sendNotifyTask()
 	{
-		uint8_t mlen;//, skip;
+		//skip!!!!!
+		uint8_t mlen;
 		error_t sendDone;
 		uint16_t mdest;
 		NotifyParentMsg* mpayload;
-		
 		//message_t radioNotifySendPkt;
-		
 
 		if (call NotifySendQueue.empty())
 		{
-			dbg("SRTreeC","sendNotifyTask(): Q is empty!\n");
-
+			dbg("SRTreeC","-NotifySendT- Queue is empty.\n");
 			return;
 		}
 		
 		if(NotifySendBusy==TRUE)
 		{
-			dbg("SRTreeC","sendNotifyTask(): NotifySendBusy= TRUE!!!\n");
-
+			dbg("SRTreeC","-NotifySendT- NotifyRadio is Busy.\n");
 			setLostNotifySendTask(TRUE);
 			return;
 		}
 		
 		radioNotifySendPkt = call NotifySendQueue.dequeue();
-		
-		//call Leds.led2On();
-		//call Led2Timer.startOneShot(TIMER_LEDS_MILLI);
 		mlen=call NotifyPacket.payloadLength(&radioNotifySendPkt);
-		
 		mpayload= call NotifyPacket.getPayload(&radioNotifySendPkt,mlen);
 		
 		if(mlen!= sizeof(NotifyParentMsg))
 		{
-			dbg("SRTreeC", "\t\t sendNotifyTask(): Unknown message!!\n");
+			dbg("SRTreeC", "-NotifySendT- Unknown message.\n");
 			return;
 		}
 		
-		dbg("SRTreeC" , " sendNotifyTask(): mlen = %u  senderID= %u \n",mlen,mpayload->senderID);
-
 		mdest= call NotifyAMPacket.destination(&radioNotifySendPkt);
-		
 		
 		sendDone=call NotifyAMSend.send(mdest,&radioNotifySendPkt, mlen);
 		
 		if ( sendDone== SUCCESS)
 		{
-			dbg("SRTreeC","sendNotifyTask(): Send returned success!!!\n");
+			dbg("SRTreeC","-NotifySendT- Send was successfull.\n");
 			setNotifySendBusy(TRUE);
 		}
 		else
 		{
-			dbg("SRTreeC","send failed!!!\n");
-			//setNotifySendBusy(FALSE);
+			dbg("SRTreeC","-NotifySendT- Send failed.\n");
 		}
 	}
-	////////////////////////////////////////////////////////////////////
-	//*****************************************************************/
-	///////////////////////////////////////////////////////////////////
-	/**
-	 * dequeues a message and processes it
-	 */
 	
 	task void receiveRoutingTask()
 	{
@@ -652,11 +624,6 @@ ___________________________________________________*/
 		
 	}
 
-
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////	
-	
 	 
 	task void receiveNotifyTask()
 	{
