@@ -6,9 +6,12 @@ import random
 
 t=Tossim([])
 f=sys.stdout #open('./logfile.txt','w')
-SIM_END_TIME= 10000 * t.ticksPerSecond()
+SIM_END_TIME= 100 * t.ticksPerSecond()
 
 print "TicksPerSecond : ", t.ticksPerSecond(),"\n"
+
+#====================
+#open output channels, arg1 in dbg(arg1,"message",arg3)
 
 t.addChannel("Boot",f)
 t.addChannel("RoutingMsg",f)
@@ -18,18 +21,19 @@ t.addChannel("Radio",f)
 t.addChannel("SRTreeC",f)
 #t.addChannel("PacketQueueC",f)
 
-for i in range(0,10):
-	m=t.getNode(i)
-	m.bootAtTime(10*t.ticksPerSecond() + i)
+#==============
+#boot nodes with delay between them
 
 
-topo = open("topology.txt", "r")
+
+
+topo = open("topology3.txt", "r")
 
 if topo is None:
 	print "Topology file not opened!!! \n"
 
 
-	
+
 r=t.radio()
 lines = topo.readlines()
 for line in lines:
@@ -37,6 +41,12 @@ for line in lines:
   if (len(s) > 0):
     print " ", s[0], " ", s[1], " ", s[2];
     r.add(int(s[0]), int(s[1]), float(s[2]))
+
+
+for i in range(0,len(lines)):
+	m=t.getNode(i)
+	m.bootAtTime(10*t.ticksPerSecond() + i)
+
 
 mTosdir = os.getenv("TINYOS_ROOT_DIR")
 noiseF=open(mTosdir+"/tos/lib/tossim/noise/meyer-heavy.txt","r")
@@ -70,7 +80,7 @@ while(h):
 		ok=False
 
 print "Node 0 connected with node 1" , r.connected(0,1) , r.connected(1,0)
-print "Node 0 connected with node 2" , r.connected(0,2) , r.connected(2,0)
-print "Node 1 connected with node 7" , r.connected(1,7) , r.connected(7,1)
-print "Node 2 connected with node 3" , r.connected(2,3) , r.connected(3,2)
-print "Node 4 connected with node 8" , r.connected(4,8) , r.connected(8,4)
+#print "Node 0 connected with node 2" , r.connected(0,2) , r.connected(2,0)
+#print "Node 1 connected with node 7" , r.connected(1,7) , r.connected(7,1)
+#print "Node 2 connected with node 3" , r.connected(2,3) , r.connected(3,2)
+#print "Node 4 connected with node 8" , r.connected(4,8) , r.connected(8,4)

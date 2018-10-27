@@ -1,7 +1,4 @@
 #include "SimpleRoutingTree.h"
-#ifdef PRINTFDBG_MODE
-	#include "printf.h"
-#endif
 
 module SRTreeC
 {
@@ -138,9 +135,6 @@ implementation
 		NotifySendBusy=state;
 		}
 		dbg("SRTreeC","NotifySendBusy = %s\n", (state == TRUE)?"TRUE":"FALSE");
-#ifdef PRINTFDBG_MODE
-		printf("\t\t\t\t\t\tNotifySendBusy = %s\n", (state == TRUE)?"TRUE":"FALSE");
-#endif
 		
 		if(state==TRUE)
 		{
@@ -187,20 +181,12 @@ implementation
 			curdepth=0;
 			parentID=0;
 			dbg("Boot", "curdepth = %d  ,  parentID= %d \n", curdepth , parentID);
-#ifdef PRINTFDBG_MODE
-			printf("Booted NodeID= %d : curdepth= %d , parentID= %d \n", TOS_NODE_ID ,curdepth , parentID);
-			printfflush();
-#endif
 		}
 		else
 		{
 			curdepth=-1;
 			parentID=-1;
 			dbg("Boot", "curdepth = %d  ,  parentID= %d \n", curdepth , parentID);
-#ifdef PRINTFDBG_MODE
-			printf("Booted NodeID= %d : curdepth= %d , parentID= %d \n", TOS_NODE_ID ,curdepth , parentID);
-			printfflush();
-#endif
 		}
 	}
 	
@@ -209,10 +195,6 @@ implementation
 		if (err == SUCCESS)
 		{
 			dbg("Radio" , "Radio initialized successfully!!!\n");
-#ifdef PRINTFDBG_MODE
-			printf("Radio initialized successfully!!!\n");
-			printfflush();
-#endif
 			
 			//call RoutingMsgTimer.startOneShot(TIMER_PERIOD_MILLI);
 			//call RoutingMsgTimer.startPeriodic(TIMER_PERIOD_MILLI);
@@ -225,10 +207,6 @@ implementation
 		else
 		{
 			dbg("Radio" , "Radio initialization failed! Retrying...\n");
-#ifdef PRINTFDBG_MODE
-			printf("Radio initialization failed! Retrying...\n");
-			printfflush();
-#endif
 			call RadioControl.start();
 		}
 	}
@@ -236,39 +214,23 @@ implementation
 	event void RadioControl.stopDone(error_t err)
 	{ 
 		dbg("Radio", "Radio stopped!\n");
-#ifdef PRINTFDBG_MODE
-		printf("Radio stopped!\n");
-		printfflush();
-#endif
 	}
 	event void SerialControl.startDone(error_t err)
 	{
 		if (err == SUCCESS)
 		{
 			dbg("Serial" , "Serial initialized successfully! \n");
-#ifdef PRINTFDBG_MODE
-			printf("Serial initialized successfully! \n");
-			printfflush();
-#endif
 			//call RoutingMsgTimer.startPeriodic(TIMER_PERIOD_MILLI);
 		}
 		else
 		{
 			dbg("Serial" , "Serial initialization failed! Retrying... \n");
-#ifdef PRINTFDBG_MODE
-			printf("Serial initialization failed! Retrying... \n");
-			printfflush();
-#endif
 			call SerialControl.start();
 		}
 	}
 	event void SerialControl.stopDone(error_t err)
 	{
 		dbg("Serial", "Serial stopped! \n");
-#ifdef PRINTFDBG_MODE
-		printf("Serial stopped! \n");
-		printfflush();
-#endif
 	}
 	
 	event void LostTaskTimer.fired()
@@ -305,17 +267,12 @@ implementation
 		
 		RoutingMsg* mrpkt;
 		dbg("SRTreeC", "RoutingMsgTimer fired!  radioBusy = %s \n",(RoutingSendBusy)?"True":"False");
-#ifdef PRINTFDBG_MODE
-		printfflush();
-		printf("RoutingMsgTimer fired!  radioBusy = %s \n",(RoutingSendBusy)?"True":"False");
-		printfflush();
-#endif
 		if (TOS_NODE_ID==0)
 		{
 			roundCounter+=1;
 			
 			dbg("SRTreeC", "\n ##################################### \n");
-			dbg("SRTreeC", "#######   ROUND   %u    ############## \n", roundCounter);
+			dbg("SRTreeC", "#######   EPOCH   %u    ############## \n", roundCounter);
 			dbg("SRTreeC", "#####################################\n");
 			
 			call RoutingMsgTimer.startOneShot(TIMER_PERIOD_MILLI);
@@ -323,10 +280,7 @@ implementation
 		
 		if(call RoutingSendQueue.full())
 		{
-#ifdef PRINTFDBG_MODE
-			printf("RoutingSendQueue is FULL!!! \n");
-			printfflush();
-#endif
+			dbg("SRTreeC", "-E- RoutingSendQueue is full\n");
 			return;
 		}
 		
@@ -335,10 +289,6 @@ implementation
 		if(mrpkt==NULL)
 		{
 			dbg("SRTreeC","RoutingMsgTimer.fired(): No valid payload... \n");
-#ifdef PRINTFDBG_MODE
-			printf("RoutingMsgTimer.fired(): No valid payload... \n");
-			printfflush();
-#endif
 			return;
 		}
 		atomic{
@@ -346,11 +296,7 @@ implementation
 		mrpkt->depth = curdepth;
 		}
 		dbg("SRTreeC" , "Sending RoutingMsg... \n");
-
-#ifdef PRINTFDBG_MODE
-		printf("NodeID= %d : RoutingMsg sending...!!!! \n", TOS_NODE_ID);
-		printfflush();
-#endif		
+		
 		call RoutingAMPacket.setDestination(&tmp, AM_BROADCAST_ADDR);
 		call RoutingPacket.setPayloadLength(&tmp, sizeof(RoutingMsg));
 		
@@ -361,26 +307,14 @@ implementation
 			if (call RoutingSendQueue.size()==1)
 			{
 				dbg("SRTreeC", "SendTask() posted!!\n");
-#ifdef PRINTFDBG_MODE
-				printf("SendTask() posted!!\n");
-				printfflush();
-#endif
 				post sendRoutingTask();
 			}
 			
 			dbg("SRTreeC","RoutingMsg enqueued successfully in SendingQueue!!!\n");
-#ifdef PRINTFDBG_MODE
-			printf("RoutingMsg enqueued successfully in SendingQueue!!!\n");
-			printfflush();
-#endif
 		}
 		else
 		{
 			dbg("SRTreeC","RoutingMsg failed to be enqueued in SendingQueue!!!");
-#ifdef PRINTFDBG_MODE			
-			printf("RoutingMsg failed to be enqueued in SendingQueue!!!\n");
-			printfflush();
-#endif
 		}		
 	}
 	
@@ -399,42 +333,21 @@ implementation
 	
 	event void RoutingAMSend.sendDone(message_t * msg , error_t err)
 	{
-		dbg("SRTreeC", "A Routing package sent... %s \n",(err==SUCCESS)?"True":"False");
-#ifdef PRINTFDBG_MODE
-		printf("A Routing package sent... %s \n",(err==SUCCESS)?"True":"False");
-		printfflush();
-#endif
-		
+		dbg("SRTreeC", "A Routing package sent... %s \n",(err==SUCCESS)?"True":"False");	
 		dbg("SRTreeC" , "Package sent %s \n", (err==SUCCESS)?"True":"False");
-#ifdef PRINTFDBG_MODE
-		printf("Package sent %s \n", (err==SUCCESS)?"True":"False");
-		printfflush();
-#endif
 		setRoutingSendBusy(FALSE);
 		
 		if(!(call RoutingSendQueue.empty()))
 		{
 			post sendRoutingTask();
 		}
-		//call Leds.led0Off();
-	
-		
+		//call Leds.led0Off();	
 	}
 	
 	event void NotifyAMSend.sendDone(message_t *msg , error_t err)
 	{
-		dbg("SRTreeC", "A Notify package sent... %s \n",(err==SUCCESS)?"True":"False");
-#ifdef PRINTFDBG_MODE
-		printf("A Notify package sent... %s \n",(err==SUCCESS)?"True":"False");
-		printfflush();
-#endif
-		
-	
+		dbg("SRTreeC", "A Notify package sent... %s \n",(err==SUCCESS)?"True":"False");	
 		dbg("SRTreeC" , "Package sent %s \n", (err==SUCCESS)?"True":"False");
-#ifdef PRINTFDBG_MODE
-		printf("Package sent %s \n", (err==SUCCESS)?"True":"False");
-		printfflush();
-#endif
 		setNotifySendBusy(FALSE);
 		
 		if(!(call NotifySendQueue.empty()))
@@ -443,7 +356,6 @@ implementation
 		}
 		//call Leds.led0Off();
 		
-		
 	}
 	
 	event void SerialAMSend.sendDone(message_t* msg , error_t err)
@@ -451,10 +363,6 @@ implementation
 		if ( &serialPkt == msg)
 		{
 			dbg("Serial" , "Package sent %s \n", (err==SUCCESS)?"True":"False");
-#ifdef PRINTFDBG_MODE
-			printf("Package sent %s \n", (err==SUCCESS)?"True":"False");
-			printfflush();
-#endif
 			setSerialBusy(FALSE);
 			
 			//call Leds.led2Off();
@@ -472,10 +380,6 @@ implementation
 		
 		dbg("SRTreeC", "### NotifyReceive.receive() start ##### \n");
 		dbg("SRTreeC", "Something received!!!  from %u   %u \n",((NotifyParentMsg*) payload)->senderID, msource);
-#ifdef PRINTFDBG_MODE		
-		printf("Something Received!!!, len = %u , npm=%u , rm=%u\n",len, sizeof(NotifyParentMsg), sizeof(RoutingMsg));
-		printfflush();
-#endif
 
 		//if(len!=sizeof(NotifyParentMsg))
 		//{
@@ -497,19 +401,11 @@ implementation
 		
 		if( enqueueDone== SUCCESS)
 		{
-#ifdef PRINTFDBG_MODE
-			printf("posting receiveNotifyTask()!!!! \n");
-			printfflush();
-#endif
 			post receiveNotifyTask();
 		}
 		else
 		{
-			dbg("SRTreeC","NotifyMsg enqueue failed!!! \n");
-#ifdef PRINTFDBG_MODE
-			printf("NotifyMsg enqueue failed!!! \n");
-			printfflush();
-#endif			
+			dbg("SRTreeC","NotifyMsg enqueue failed!!! \n");		
 		}
 		
 		//call Leds.led1Off();
@@ -528,10 +424,7 @@ implementation
 		dbg("SRTreeC", "### RoutingReceive.receive() start ##### \n");
 		dbg("SRTreeC", "Something received!!!  from %u  %u \n",((RoutingMsg*) payload)->senderID ,  msource);
 		//dbg("SRTreeC", "Something received!!!\n");
-#ifdef PRINTFDBG_MODE		
-		printf("Something Received!!!, len = %u , npm=%u , rm=%u\n",len, sizeof(NotifyParentMsg), sizeof(RoutingMsg));
-		printfflush();
-#endif
+
 		//call Leds.led1On();
 		//call Led1Timer.startOneShot(TIMER_LEDS_MILLI);
 		
@@ -552,19 +445,11 @@ implementation
 		enqueueDone=call RoutingReceiveQueue.enqueue(tmp);
 		if(enqueueDone == SUCCESS)
 		{
-#ifdef PRINTFDBG_MODE
-			printf("posting receiveRoutingTask()!!!! \n");
-			printfflush();
-#endif
 			post receiveRoutingTask();
 		}
 		else
 		{
-			dbg("SRTreeC","RoutingMsg enqueue failed!!! \n");
-#ifdef PRINTFDBG_MODE
-			printf("RoutingMsg enqueue failed!!! \n");
-			printfflush();
-#endif			
+			dbg("SRTreeC","RoutingMsg enqueue failed!!! \n");			
 		}
 		
 		//call Leds.led1Off();
@@ -577,10 +462,6 @@ implementation
 	{
 		// when receiving from serial port
 		dbg("Serial","Received msg from serial port \n");
-#ifdef PRINTFDBG_MODE
-		printf("Reveived message from serial port \n");
-		printfflush();
-#endif
 		return msg;
 	}
 	
@@ -595,17 +476,10 @@ implementation
 		error_t sendDone;
 		//message_t radioRoutingSendPkt;
 		
-#ifdef PRINTFDBG_MODE
-		printf("SendRoutingTask(): Starting....\n");
-		printfflush();
-#endif
 		if (call RoutingSendQueue.empty())
 		{
 			dbg("SRTreeC","sendRoutingTask(): Q is empty!\n");
-#ifdef PRINTFDBG_MODE		
-			printf("sendRoutingTask():Q is empty!\n");
-			printfflush();
-#endif
+
 			return;
 		}
 		
@@ -613,10 +487,7 @@ implementation
 		if(RoutingSendBusy)
 		{
 			dbg("SRTreeC","sendRoutingTask(): RoutingSendBusy= TRUE!!!\n");
-#ifdef PRINTFDBG_MODE
-			printf(	"sendRoutingTask(): RoutingSendBusy= TRUE!!!\n");
-			printfflush();
-#endif
+
 			setLostRoutingSendTask(TRUE);
 			return;
 		}
@@ -630,10 +501,7 @@ implementation
 		if(mlen!=sizeof(RoutingMsg))
 		{
 			dbg("SRTreeC","\t\tsendRoutingTask(): Unknown message!!!\n");
-#ifdef PRINTFDBG_MODE
-			printf("\t\tsendRoutingTask(): Unknown message!!!!\n");
-			printfflush();
-#endif
+
 			return;
 		}
 		sendDone=call RoutingAMSend.send(mdest,&radioRoutingSendPkt,mlen);
@@ -641,18 +509,13 @@ implementation
 		if ( sendDone== SUCCESS)
 		{
 			dbg("SRTreeC","sendRoutingTask(): Send returned success!!!\n");
-#ifdef PRINTFDBG_MODE
-			printf("sendRoutingTask(): Send returned success!!!\n");
-			printfflush();
-#endif
+
 			setRoutingSendBusy(TRUE);
 		}
 		else
 		{
 			dbg("SRTreeC","send failed!!!\n");
-#ifdef PRINTFDBG_MODE
-			printf("SendRoutingTask(): send failed!!!\n");
-#endif
+
 			//setRoutingSendBusy(FALSE);
 		}
 	}
@@ -668,27 +531,18 @@ implementation
 		
 		//message_t radioNotifySendPkt;
 		
-#ifdef PRINTFDBG_MODE
-		printf("SendNotifyTask(): going to send one more package.\n");
-		printfflush();
-#endif
+
 		if (call NotifySendQueue.empty())
 		{
 			dbg("SRTreeC","sendNotifyTask(): Q is empty!\n");
-#ifdef PRINTFDBG_MODE		
-			printf("sendNotifyTask():Q is empty!\n");
-			printfflush();
-#endif
+
 			return;
 		}
 		
 		if(NotifySendBusy==TRUE)
 		{
 			dbg("SRTreeC","sendNotifyTask(): NotifySendBusy= TRUE!!!\n");
-#ifdef PRINTFDBG_MODE
-			printf(	"sendTask(): NotifySendBusy= TRUE!!!\n");
-			printfflush();
-#endif
+
 			setLostNotifySendTask(TRUE);
 			return;
 		}
@@ -704,18 +558,11 @@ implementation
 		if(mlen!= sizeof(NotifyParentMsg))
 		{
 			dbg("SRTreeC", "\t\t sendNotifyTask(): Unknown message!!\n");
-#ifdef PRINTFDBG_MODE
-			printf("\t\t sendNotifyTask(): Unknown message!!\n");
-			printfflush();
-#endif
 			return;
 		}
 		
 		dbg("SRTreeC" , " sendNotifyTask(): mlen = %u  senderID= %u \n",mlen,mpayload->senderID);
-#ifdef PRINTFDBG_MODE
-		printf("\t\t\t\t sendNotifyTask(): mlen=%u\n",mlen);
-		printfflush();
-#endif
+
 		mdest= call NotifyAMPacket.destination(&radioNotifySendPkt);
 		
 		
@@ -724,18 +571,11 @@ implementation
 		if ( sendDone== SUCCESS)
 		{
 			dbg("SRTreeC","sendNotifyTask(): Send returned success!!!\n");
-#ifdef PRINTFDBG_MODE
-			printf("sendNotifyTask(): Send returned success!!!\n");
-			printfflush();
-#endif
 			setNotifySendBusy(TRUE);
 		}
 		else
 		{
 			dbg("SRTreeC","send failed!!!\n");
-#ifdef PRINTFDBG_MODE
-			printf("SendNotifyTask(): send failed!!!\n");
-#endif
 			//setNotifySendBusy(FALSE);
 		}
 	}
@@ -752,19 +592,11 @@ implementation
 		uint8_t len;
 		message_t radioRoutingRecPkt;
 		
-#ifdef PRINTFDBG_MODE
-		printf("ReceiveRoutingTask():received msg...\n");
-		printfflush();
-#endif
 		radioRoutingRecPkt= call RoutingReceiveQueue.dequeue();
 		
 		len= call RoutingPacket.payloadLength(&radioRoutingRecPkt);
 		
 		dbg("SRTreeC","ReceiveRoutingTask(): len=%u \n",len);
-#ifdef PRINTFDBG_MODE
-		printf("ReceiveRoutingTask(): len=%u!\n",len);
-		printfflush();
-#endif
 		// processing of radioRecPkt
 		
 		// pos tha xexorizo ta 2 diaforetika minimata???
@@ -781,20 +613,12 @@ implementation
 			//
 			
 			dbg("SRTreeC" , "receiveRoutingTask():senderID= %d , depth= %d \n", mpkt->senderID , mpkt->depth);
-#ifdef PRINTFDBG_MODE
-			printf("NodeID= %d , RoutingMsg received! \n",TOS_NODE_ID);
-			printf("receiveRoutingTask():senderID= %d , depth= %d \n", mpkt->senderID , mpkt->depth);
-			printfflush();
-#endif
 			if ( (parentID<0)||(parentID>=65535))
 			{
 				// tote den exei akoma patera
 				parentID= call RoutingAMPacket.source(&radioRoutingRecPkt);//mpkt->senderID;q
 				curdepth= mpkt->depth + 1;
-#ifdef PRINTFDBG_MODE
-				printf("NodeID= %d : curdepth= %d , parentID= %d \n", TOS_NODE_ID ,curdepth , parentID);
-				printfflush();
-#endif
+
 				// tha stelnei kai ena minima NotifyParentMsg ston patera
 				
 				m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
@@ -802,20 +626,13 @@ implementation
 				m->depth = curdepth;
 				m->parentID = parentID;
 				dbg("SRTreeC" , "receiveRoutingTask():NotifyParentMsg sending to node= %d... \n", parentID);
-#ifdef PRINTFDBG_MODE
-				printf("NotifyParentMsg NodeID= %d sent!!! \n", TOS_NODE_ID);
-				printfflush();
-#endif
 				call NotifyAMPacket.setDestination(&tmp, parentID);
 				call NotifyPacket.setPayloadLength(&tmp,sizeof(NotifyParentMsg));
 				
 				if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
 				{
 					dbg("SRTreeC", "receiveRoutingTask(): NotifyParentMsg enqueued in SendingQueue successfully!!!");
-#ifdef PRINTFDBG_MODE
-					printf("receiveRoutingTask(): NotifyParentMsg enqueued successfully!!!");
-					printfflush();
-#endif
+
 					if (call NotifySendQueue.size() == 1)
 					{
 						post sendNotifyTask();
@@ -826,7 +643,7 @@ implementation
 					call RoutingMsgTimer.startOneShot(TIMER_FAST_PERIOD);
 				}
 			}
-			else
+			else //if node has valid parent
 			{
 				
 				if (( curdepth > mpkt->depth +1) || (mpkt->senderID==parentID))
@@ -836,18 +653,10 @@ implementation
 				
 					parentID= call RoutingAMPacket.source(&radioRoutingRecPkt);//mpkt->senderID;
 					curdepth = mpkt->depth + 1;
-				
-#ifdef PRINTFDBG_MODE
-					printf("NodeID= %d : curdepth= %d , parentID= %d \n", TOS_NODE_ID ,curdepth , parentID);
-					printfflush();
-#endif					
+									
 									
 					
 					dbg("SRTreeC" , "NotifyParentMsg sending to node= %d... \n", oldparentID);
-#ifdef PRINTFDBG_MODE
-					printf("NotifyParentMsg sending to node=%d... \n", oldparentID);
-					printfflush();
-#endif
 					if ( (oldparentID<65535) || (oldparentID>0) || (oldparentID==parentID))
 					{
 						m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
@@ -862,10 +671,7 @@ implementation
 						if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
 						{
 							dbg("SRTreeC", "receiveRoutingTask(): NotifyParentMsg enqueued in SendingQueue successfully!!!\n");
-#ifdef PRINTFDBG_MODE
-							printf("receiveRoutingTask(): NotifyParentMsg enqueued successfully!!!");
-							printfflush();
-#endif
+
 							if (call NotifySendQueue.size() == 1)
 							{
 								post sendNotifyTask();
@@ -886,20 +692,13 @@ implementation
 						m->depth = curdepth;
 						m->parentID = parentID;
 						dbg("SRTreeC" , "receiveRoutingTask():NotifyParentMsg sending to node= %d... \n", parentID);
-#ifdef PRINTFDBG_MODE
-						printf("NotifyParentMsg NodeID= %d sent!!! \n", TOS_NODE_ID);
-						printfflush();
-#endif
 						call NotifyAMPacket.setDestination(&tmp, parentID);
 						call NotifyPacket.setPayloadLength(&tmp,sizeof(NotifyParentMsg));
 						
 						if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
 						{
 							dbg("SRTreeC", "receiveRoutingTask(): NotifyParentMsg enqueued in SendingQueue successfully!!! \n");
-#ifdef PRINTFDBG_MODE					
-							printf("receiveRoutingTask(): NotifyParentMsg enqueued successfully!!!");
-							printfflush();
-#endif
+
 							if (call NotifySendQueue.size() == 1)
 							{
 								post sendNotifyTask();
@@ -911,13 +710,10 @@ implementation
 				
 			}
 		}
-		else
+		else //not routing message
 		{
 			dbg("SRTreeC","receiveRoutingTask():Empty message!!! \n");
-#ifdef PRINTFDBG_MODE
-			printf("receiveRoutingTask():Empty message!!! \n");
-			printfflush();
-#endif
+
 			setLostRoutingRecTask(TRUE);
 			return;
 		}
@@ -936,19 +732,12 @@ implementation
 		uint8_t len;
 		message_t radioNotifyRecPkt;
 		
-#ifdef PRINTFDBG_MODE
-		printf("ReceiveNotifyTask():received msg...\n");
-		printfflush();
-#endif
 		radioNotifyRecPkt= call NotifyReceiveQueue.dequeue();
 		
 		len= call NotifyPacket.payloadLength(&radioNotifyRecPkt);
 		
 		dbg("SRTreeC","ReceiveNotifyTask(): len=%u \n",len);
-#ifdef PRINTFDBG_MODE
-		printf("ReceiveNotifyTask(): len=%u!\n",len);
-		printfflush();
-#endif
+
 		if(len == sizeof(NotifyParentMsg))
 		{
 			// an to parentID== TOS_NODE_ID tote
@@ -959,10 +748,7 @@ implementation
 			NotifyParentMsg* mr = (NotifyParentMsg*) (call NotifyPacket.getPayload(&radioNotifyRecPkt,len));
 			
 			dbg("SRTreeC" , "NotifyParentMsg received from %d !!! \n", mr->senderID);
-#ifdef PRINTFDBG_MODE
-			printf("NodeID= %d NotifyParentMsg from senderID = %d!!! \n",TOS_NODE_ID , mr->senderID);
-			printfflush();
-#endif
+
 			if ( mr->parentID == TOS_NODE_ID)
 			{
 				// tote prosthiki stin lista ton paidion.
@@ -983,10 +769,6 @@ implementation
 					m->depth = mr->depth;
 					m->parentID = mr->parentID;
 					dbg("Serial", "Sending NotifyParentMsg to PC... \n");
-#ifdef PRINTFDBG_MODE
-					printf("Sending NotifyParentMsg to PC..\n");
-					printfflush();
-#endif
 					if (call SerialAMSend.send(parentID, &serialPkt, sizeof(NotifyParentMsg))==SUCCESS)
 					{
 						setSerialBusy(TRUE);
@@ -1005,10 +787,7 @@ implementation
 				//m->parentID = mr->parentID;
 				
 				dbg("SRTreeC" , "Forwarding NotifyParentMsg from senderID= %d  to parentID=%d \n" , m->senderID, parentID);
-#ifdef PRINTFDBG_MODE
-				printf("NotifyParentMsg NodeID= %d sent!\n", TOS_NODE_ID);
-				printfflush();
-#endif
+
 				call NotifyAMPacket.setDestination(&tmp, parentID);
 				call NotifyPacket.setPayloadLength(&tmp,sizeof(NotifyParentMsg));
 				
@@ -1028,10 +807,6 @@ implementation
 		else
 		{
 			dbg("SRTreeC","receiveNotifyTask():Empty message!!! \n");
-#ifdef PRINTFDBG_MODE
-			printf("receiveNotifyTask():Empty message!!! \n");
-			printfflush();
-#endif
 			setLostNotifyRecTask(TRUE);
 			return;
 		}
