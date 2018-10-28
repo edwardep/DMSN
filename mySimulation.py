@@ -6,7 +6,7 @@ import random
 
 t=Tossim([])
 f=sys.stdout #open('./logfile.txt','w')
-SIM_END_TIME= 100 * t.ticksPerSecond()
+SIM_END_TIME= 10000 * t.ticksPerSecond()
 
 print "TicksPerSecond : ", t.ticksPerSecond(),"\n"
 
