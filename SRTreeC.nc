@@ -61,6 +61,7 @@ implementation
 	
 	uint8_t curdepth;
 	uint16_t parentID;
+	uint16_t check_sum;
 	
 	task void sendRoutingTask();
 	task void sendNotifyTask();
@@ -146,13 +147,15 @@ ___________________________________________________*/
 #endif
 			curdepth=0;
 			parentID=0;
-			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d \n", curdepth , parentID);
+			check_sum = 1;
+			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d ,check_sum= %d\n", curdepth , parentID, check_sum);
 		}
 		else
 		{
 			curdepth=-1;
 			parentID=-1;
-			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d \n", curdepth , parentID);
+			check_sum = 1;
+			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d ,check_sum= %d\n", curdepth , parentID, check_sum);
 		}
 	}
 	
@@ -242,12 +245,17 @@ ___________________________________________________*/
 
 	event void EpochTimer.fired()
 	{
+
+		
+
 		NotifyParentMsg* m;
 		message_t tmp;
 		
+		
+
 		m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
-		m->check_sum = (curdepth*10)+TOS_NODE_ID;
-		dbg("SRTreeC" , "-NotifySendE- Sending NotifyMsg to parentID %d.\n", parentID);
+		m->check_sum = check_sum;
+		dbg("SRTreeC" , "-EpochTimer.fired- Node: %d, check_sum: %d\n", TOS_NODE_ID,check_sum);
 		call NotifyAMPacket.setDestination(&tmp, parentID);
 		call NotifyPacket.setPayloadLength(&tmp,sizeof(NotifyParentMsg));
 				
@@ -255,17 +263,13 @@ ___________________________________________________*/
 		{
 			if (call NotifySendQueue.size() == 1)
 			{	
-				dbg("SRTreeC", "-NotifySendE- SendNotifyTask() posted.\n");
+				//dbg("SRTreeC", "-NotifySendE- SendNotifyTask() posted.\n");
 				post sendNotifyTask();
 			}
 		}
 
-
-		if(TOS_NODE_ID==0)
-		{
-			roundCounter += 1;
-			dbg("SRTreeC", "\n_____________________EPOCH___%u___________________\n\n", roundCounter);
-		}
+		check_sum = 1;
+		
 	}
 
 
@@ -276,7 +280,7 @@ ___________________________________________________*/
 		
 		RoutingMsg* mrpkt;
 		
-		dbg("SRTreeC", "-TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is %s \n",(RoutingSendBusy)?"Busy":"Free");
+		//dbg("SRTreeC", "-TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is %s \n",(RoutingSendBusy)?"Busy":"Free");
 		
 		if(call RoutingSendQueue.full())
 		{
@@ -304,7 +308,7 @@ ___________________________________________________*/
 			//edw exei ena 8ema h eftichia
 			if (call RoutingSendQueue.size()==1)
 			{
-				dbg("SRTreeC", "-TimerFiredE- SendRoutingTask() posted!\n");
+				//dbg("SRTreeC", "-TimerFiredE- SendRoutingTask() posted!\n");
 				post sendRoutingTask();
 			}
 		}
@@ -319,15 +323,12 @@ ___________________________________________________*/
 
 	event void RoutingAMSend.sendDone(message_t * msg , error_t err)
 	{
-		dbg("SRTreeC","-------------Sent pkg-------------\n");
-
-		dbg("SRTreeC", "-RoutingSendE- A Routing package sent... %s \n",(err==SUCCESS)?"True":"False");	
+		//dbg("SRTreeC", "-RoutingSendE- A Routing package sent... %s \n",(err==SUCCESS)?"True":"False");	
 		setRoutingSendBusy(FALSE);
-		
-		dbg("SRTreeC", "-RoutingSendE- Q size = %d\n", call RoutingSendQueue.size());
+
 		if(!(call RoutingSendQueue.empty()))
 		{
-			dbg("SRTreeC", "-RoutingSendE- sendRoutingTask() posted!\n");
+			//dbg("SRTreeC", "-RoutingSendE- sendRoutingTask() posted!\n");
 			post sendRoutingTask();
 		}
 
@@ -339,7 +340,7 @@ ___________________________________________________*/
 		
 		if(!(call NotifySendQueue.empty()))
 		{
-			dbg("SRTreeC", "-NotifySendE- sendNotifyTask() posted!\n");
+			//dbg("SRTreeC", "-NotifySendE- sendNotifyTask() posted!\n");
 			post sendNotifyTask();
 		}
 	}
@@ -348,7 +349,7 @@ ___________________________________________________*/
 	{
 		if ( &serialPkt == msg)
 		{
-			dbg("Serial" , "Serial Package sent %s \n", (err==SUCCESS)?"True":"False");
+			//dbg("Serial" , "Serial Package sent %s \n", (err==SUCCESS)?"True":"False");
 			setSerialBusy(FALSE);
 		}
 	}
@@ -363,24 +364,18 @@ ___________________________________________________*/
 		
 		msource = call NotifyAMPacket.source(msg);
 		
-		dbg("SRTreeC", "-NotifyRecE- Sender: %u, Source: %u \n",((NotifyParentMsg*) payload)->check_sum, msource);
+		dbg("SRTreeC", "-NotifyRecE- check_sum: %u, Source: %u \n",((NotifyParentMsg*) payload)->check_sum, msource);
 
-		//existing comments
-		//if(len!=sizeof(NotifyParentMsg))
-		//{
-			//dbg("SRTreeC","\t\tUnknown message received!!!\n");
-			//return msg;
-		//}
-	
 		atomic
 		{
 			memcpy(&tmp,msg,sizeof(message_t)); //tmp = *(message_t*)msg;
 		}
 		enqueueDone = call NotifyReceiveQueue.enqueue(tmp);
 		
+		dbg("SRTreeC", "NotifyReceiveQueue Size: %d\n",call NotifyReceiveQueue.size());
 		if( enqueueDone== SUCCESS)
 		{
-			dbg("SRTreeC", "-NotifyRecE- receiveNotifyTask() posted!\n");
+			//dbg("SRTreeC", "-NotifyRecE- receiveNotifyTask() posted!\n");
 			post receiveNotifyTask();
 		}
 		else
@@ -399,25 +394,17 @@ ___________________________________________________*/
 		
 		msource =call RoutingAMPacket.source(msg);
 
-		if(curdepth>(((RoutingMsg*) payload)->depth))
+		if(curdepth > (((RoutingMsg*) payload)->depth))
 		{
+			//dbg("SRTreeC", "-RoutingRecE- SenderID: %u, Source: %u\n",((RoutingMsg*) payload)->senderID ,  msource);
 
-			//dbg("SRTreeC","-------------Received pkg-------------\n");
-			dbg("SRTreeC", "-RoutingRecE- Sender: %u, Source: %u\n",((RoutingMsg*) payload)->senderID ,  msource);
-
-			//if(len!=sizeof(RoutingMsg))
-			//{
-				//dbg("SRTreeC","\t\tUnknown message received!!!\n");
-				//return msg;
-			//}
-			
 			atomic{
 				memcpy(&tmp,msg,sizeof(message_t)); //tmp=*(message_t*)msg;
 			}
 			enqueueDone=call RoutingReceiveQueue.enqueue(tmp);
 			if(enqueueDone == SUCCESS)
 			{
-				dbg("SRTreeC", "-RoutingRecE- receiveRoutingTask() posted!\n");
+				//dbg("SRTreeC", "-RoutingRecE- receiveRoutingTask() posted!\n");
 				post receiveRoutingTask();
 			}
 			else
@@ -478,7 +465,7 @@ ___________________________________________________*/
 		
 		if ( sendDone== SUCCESS)
 		{
-			dbg("SRTreeC","-RoutingSendT- Send was successfull\n");
+			//dbg("SRTreeC","-RoutingSendT- Send was successfull\n");
 			setRoutingSendBusy(TRUE);
 		}
 		else
@@ -486,12 +473,12 @@ ___________________________________________________*/
 			dbg("SRTreeC","-RoutingSendT- Send failed!\n");
 		}
 
-		call EpochTimer.startPeriodic(EPOCH_MILLI);
+		call DelayTimer.startOneShot(EPOCH_MILLI/(curdepth+1));
+		dbg("SRTreeC","DelayTimer Started for NODE: %d, time: %d\n",TOS_NODE_ID,(EPOCH_MILLI/(curdepth+1)));
 	}
 
 	task void sendNotifyTask()
 	{
-		//skip!!!!!
 		uint8_t mlen;
 		error_t sendDone;
 		uint16_t mdest;
@@ -540,7 +527,7 @@ ___________________________________________________*/
 	
 	task void receiveRoutingTask()
 	{
-		message_t tmp;
+		//message_t tmp;
 		uint8_t len;
 		message_t radioRoutingRecPkt;
 		
@@ -552,101 +539,19 @@ ___________________________________________________*/
 		//if received msg is RoutingMsg		
 		if(len == sizeof(RoutingMsg))
 		{
-			NotifyParentMsg* m;
+			//NotifyParentMsg* m;
 			RoutingMsg * mpkt = (RoutingMsg*) (call RoutingPacket.getPayload(&radioRoutingRecPkt,len));
 			
-			dbg("SRTreeC" , "-RoutingRecT- senderID= %d , depth= %d \n", mpkt->senderID , mpkt->depth);
+			//dbg("SRTreeC" , "-RoutingRecT- senderID= %d , depth= %d \n", mpkt->senderID , mpkt->depth);
 			
-			
-
-
 			// set Parent and depth
 			parentID= call RoutingAMPacket.source(&radioRoutingRecPkt);
 			curdepth= mpkt->depth + 1;
 
-			call DelayTimer.startOneShot(EPOCH_MILLI/(curdepth+1));
+			//call DelayTimer.startOneShot(EPOCH_MILLI/(curdepth+1));
 
 			//boradcasting to posible children
 			call RoutingMsgTimer.startOneShot(TIMER_FAST_PERIOD);
-
-
-
-
-
-
-
-			// notify Parent	
-			/*m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
-			m->senderID=TOS_NODE_ID;
-			m->depth = curdepth;
-			m->parentID = parentID;
-			dbg("SRTreeC" , "-RoutingRecT- Sending NotifyMsg to parentID %d.\n", parentID);
-			call NotifyAMPacket.setDestination(&tmp, parentID);
-			call NotifyPacket.setPayloadLength(&tmp,sizeof(NotifyParentMsg));
-				
-			if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
-			{
-				if (call NotifySendQueue.size() == 1)
-				{	
-					dbg("SRTreeC", "-RoutingRecT- SendNotifyTask() posted.\n");
-					post sendNotifyTask();
-				}
-			}*/
-
-			
-			/*else //if node has a valid parent
-			{
-				
-				// if (myDepth > senderDepth+1 || Sender = oldParent) 
-				if (( curdepth > mpkt->depth +1) || (mpkt->senderID==parentID))
-				{
-					uint16_t oldparentID = parentID;
-					
-					// set new Parent and depth
-					parentID= call RoutingAMPacket.source(&radioRoutingRecPkt);
-					curdepth = mpkt->depth + 1;
-									
-					dbg("SRTreeC" , "-RoutingRecT- Send NotifyMsg to oldParentID %d.\n", oldparentID);
-					m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
-					m->senderID=TOS_NODE_ID;
-					m->depth = curdepth;
-					m->parentID = parentID;
-						
-					call NotifyAMPacket.setDestination(&tmp,oldparentID);
-					call NotifyPacket.setPayloadLength(&tmp,sizeof(NotifyParentMsg));
-								
-					if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
-					{
-						if (call NotifySendQueue.size() == 1)
-						{
-							dbg("SRTreeC", "-RoutingRecT- SendNotifyTask() posted.\n");
-							post sendNotifyTask();
-						}
-					}			
-					if (oldparentID != parentID)	//sends NotifyMsg to newParent
-					{
-						m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
-						m->senderID=TOS_NODE_ID;
-						m->depth = curdepth;
-						m->parentID = parentID;
-						dbg("SRTreeC" , "-RoutingRecT- Send NotifyMsg to newParentID %d.\n",parentID);
-						call NotifyAMPacket.setDestination(&tmp, parentID);
-						//call packet.type
-						call NotifyPacket.setPayloadLength(&tmp,sizeof(NotifyParentMsg));
-						
-						if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
-						{
-							if (call NotifySendQueue.size() == 1)
-							{
-								dbg("SRTreeC", "-RoutingRecT- SendNotifyTask() posted.\n");
-								post sendNotifyTask();
-							}
-						}
-					}
-				}*/
-				
-				
-			
 		}
 		else // received msg is not RoutingMsg
 		{
@@ -661,28 +566,27 @@ ___________________________________________________*/
 
 	task void receiveNotifyTask()
 	{
-		message_t tmp;
+		//message_t tmp;
 		uint8_t len;
 		message_t radioNotifyRecPkt;
 		
+
+
+
 		radioNotifyRecPkt= call NotifyReceiveQueue.dequeue();
 
 		len= call NotifyPacket.payloadLength(&radioNotifyRecPkt);
 		
 		if(len == sizeof(NotifyParentMsg))
-		{
-			// an to parentID== TOS_NODE_ID tote
-			// tha proothei to minima pros tin riza xoris broadcast
-			// kai tha ananeonei ton tyxon pinaka paidion..
-			// allios tha diagrafei to paidi apo ton pinaka paidion
-			
+		{		
 			NotifyParentMsg* mr = (NotifyParentMsg*) (call NotifyPacket.getPayload(&radioNotifyRecPkt,len));
 			
-			dbg("SRTreeC" , "-NotifyRecT- Received msg from %d.\n", mr->check_sum);
+			//dbg("SRTreeC" , "-NotifyRecT- check_sum: %d.\n", mr->check_sum);
 
 			
-			if ( TOS_NODE_ID==0)
-			{
+
+			//if ( TOS_NODE_ID==0)
+			//{
 #ifdef SERIAL_EN
 				/*if (!serialBusy)
 				{ // mipos mporei na mpei san task?
@@ -697,31 +601,33 @@ ___________________________________________________*/
 					}
 				}*/
 #endif
-			}
-			else
-			{
-				NotifyParentMsg* m;
-				memcpy(&tmp,&radioNotifyRecPkt,sizeof(message_t));
+			//}
+			//else
+			//{
+				//NotifyParentMsg* m;
+				//memcpy(&tmp,&radioNotifyRecPkt,sizeof(message_t));
 				
-				m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
-				m->check_sum = mr->check_sum+1;
-				//m->depth = mr->depth;
-				//m->parentID = mr->parentID;
-				
-				dbg("SRTreeC" , "-NotifyRecT- Forwarding Notify Msg from %d to %d.\n" , m->check_sum, parentID);
+				//m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
+				dbg("SRTreeC" , "___________________________________________________\n");
+				dbg("SRTreeC" , "-NotifyRecT- Forwarding Msg from %d to %d\n" , TOS_NODE_ID, parentID);
+				dbg("SRTreeC" , "old_sum: %d\n",check_sum);
+				dbg("SRTreeC" , "+%d \n", mr->check_sum);
+				check_sum = check_sum +mr->check_sum;
+				dbg("SRTreeC" , "new_sum: %d\n" , check_sum);
+				dbg("SRTreeC" , "___________________________________________________\n");
 
-				call NotifyAMPacket.setDestination(&tmp, parentID);
+				/*call NotifyAMPacket.setDestination(&tmp, parentID);
 				call NotifyPacket.setPayloadLength(&tmp,sizeof(NotifyParentMsg));
 				
 				if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
 				{
 					if (call NotifySendQueue.size() == 1)
 					{
-						dbg("SRTreeC", "-NotifyRecT- SendNotifyTask() posted.\n");
-						post sendNotifyTask();
+						//dbg("SRTreeC", "-NotifyRecT- SendNotifyTask() posted.\n");
+						//post sendNotifyTask();
 					}
-				}
-			}
+				}*/
+			//}
 		}
 		else
 		{
@@ -730,6 +636,12 @@ ___________________________________________________*/
 			setLostNotifyRecTask(TRUE);
 			call LostTaskTimer.startOneShot(SEND_CHECK_MILLIS);
 			return;
+		}
+
+		if(TOS_NODE_ID==0)
+		{
+			roundCounter += 1;
+			dbg("SRTreeC", "\n_____________________EPOCH___%u_______chksum=%d__________\n\n", roundCounter,check_sum);
 		}
 		
 	}
