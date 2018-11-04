@@ -2,27 +2,29 @@ import argparse
 import math
 
 
-
 # calculates distance between pointA(x,y) and pointB(X,Y)
 def min_distance(x,y,X,Y):
 	return round(math.sqrt((x - X)**2 + (y - Y)**2),1)
 
 # returns the list of node's neighbours
-def find_neighbours(node, diam, cov):
+def find_neighbours(root, nodes, tree, diam, cov):
 
-	for i in range(diam*diam):
-		print(i),#str(i/diam)+str(i%diam)),
-		if i%diam == diam-1: 
-			print(" ")
+	if len(nodes) == 0:
+		return
 
-	neighbours = []
-	for i in range(diam):
-		for j in range(diam):
-			if min_distance(node/diam,node%diam,i,j) <= cov:
-				neighbours.append((i*diam)+j)
+	index = len(tree)
+	for child in range(diam**2):
+		if child in nodes and min_distance(root/diam, root%diam, child/diam, child%diam) <= cov:
+			tree.append((child,root))
+			nodes.remove(child)
+	
 
-	#print("Node "+str(node)+" has "+str(count)+" neighbours")
-	print(neighbours)
+	for k in [x[0] for x in tree[index:]]:
+		find_neighbours(k, nodes, tree, diam, cov)
+
+	return
+	
+	
 def Main():
 
 	parser = argparse.ArgumentParser(usage='python topo.py D C')
@@ -31,9 +33,20 @@ def Main():
 	parser.add_argument('node',type=int)                
 	args = parser.parse_args()
 
-	N = (args.node/10)*args.size+args.node%10
+	root = args.node
 
-	find_neighbours(N,args.size,args.coverage)
+	nodes = []
+	for i in range(args.size**2):
+		nodes.append(i)
 
+	tree = []
+	find_neighbours(root, nodes, tree, args.size, args.coverage)
+	
+	f = open("topology3.txt","w")
+	for i in tree:
+		f.write(str(i[0])+" "+str(i[1])+" -50\r\n")
+		f.write(str(i[1])+" "+str(i[0])+" -50\r\n")
+
+	f.close()
 if __name__ == "__main__":
 	Main()
