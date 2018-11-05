@@ -14,8 +14,8 @@ implementation{
 	components MainC, ActiveMessageC, SerialActiveMessageC;
 	components new TimerMilliC() as RoutingMsgTimerC;
 	components new TimerMilliC() as LostTaskTimerC;
-	components new TimerMilliC() as DelayTimerC;
 	components new TimerMilliC() as EpochTimerC;
+//	components new TimerMilliC() as DelayTimerC;
 	
 	components new AMSenderC(AM_ROUTINGMSG) as RoutingSenderC;
 	components new AMReceiverC(AM_ROUTINGMSG) as RoutingReceiverC;
@@ -36,8 +36,8 @@ implementation{
 	
 	SRTreeC.RoutingMsgTimer->RoutingMsgTimerC;
 	SRTreeC.LostTaskTimer->LostTaskTimerC;
-	SRTreeC.DelayTimer->DelayTimerC;
 	SRTreeC.EpochTimer->EpochTimerC;
+	//SRTreeC.DelayTimer->DelayTimerC;
 	
 	SRTreeC.RoutingPacket->RoutingSenderC.Packet;
 	SRTreeC.RoutingAMPacket->RoutingSenderC.AMPacket;

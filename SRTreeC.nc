@@ -22,9 +22,9 @@ module SRTreeC
 	uses interface Packet as SerialPacket;
 #endif
 	uses interface Timer<TMilli> as EpochTimer;
-	uses interface Timer<TMilli> as DelayTimer;
 	uses interface Timer<TMilli> as RoutingMsgTimer;
 	uses interface Timer<TMilli> as LostTaskTimer;
+	//uses interface Timer<TMilli> as DelayTimer;
 	
 	uses interface Receive as RoutingReceive;
 	uses interface Receive as NotifyReceive;
@@ -238,10 +238,7 @@ ___________________________________________________*/
 		}
 	}
 	
-	event void DelayTimer.fired()
-	{
-		call EpochTimer.startPeriodic(EPOCH_MILLI);
-	}
+	
 
 	event void EpochTimer.fired()
 	{
@@ -473,8 +470,11 @@ ___________________________________________________*/
 			dbg("SRTreeC","-RoutingSendT- Send failed!\n");
 		}
 
-		call DelayTimer.startOneShot(EPOCH_MILLI/(curdepth+1));
-		dbg("SRTreeC","DelayTimer Started for NODE: %d, time: %d\n",TOS_NODE_ID,(EPOCH_MILLI/(curdepth+1)));
+		if(TOS_NODE_ID==0)
+		{
+			call EpochTimer.startPeriodicAt(EPOCH_MILLI/(curdepth+1),EPOCH_MILLI);
+			dbg("SRTreeC","DelayTimer Started for NODE: %d, time: %d\n",TOS_NODE_ID,(EPOCH_MILLI/(curdepth+1)));
+		}	
 	}
 
 	task void sendNotifyTask()
@@ -548,7 +548,7 @@ ___________________________________________________*/
 			parentID= call RoutingAMPacket.source(&radioRoutingRecPkt);
 			curdepth= mpkt->depth + 1;
 
-			//call DelayTimer.startOneShot(EPOCH_MILLI/(curdepth+1));
+			call EpochTimer.startPeriodicAt((EPOCH_MILLI/(curdepth+1))-TOS_NODE_ID*100,EPOCH_MILLI);
 
 			//boradcasting to posible children
 			call RoutingMsgTimer.startOneShot(TIMER_FAST_PERIOD);
@@ -609,7 +609,6 @@ ___________________________________________________*/
 				
 				//m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
 				dbg("SRTreeC" , "___________________________________________________\n");
-				dbg("SRTreeC" , "-NotifyRecT- Forwarding Msg from %d to %d\n" , TOS_NODE_ID, parentID);
 				dbg("SRTreeC" , "old_sum: %d\n",check_sum);
 				dbg("SRTreeC" , "+%d \n", mr->check_sum);
 				check_sum = check_sum +mr->check_sum;
