@@ -6,7 +6,7 @@ import math
 def min_distance(x,y,X,Y):
 	return round(math.sqrt((x - X)**2 + (y - Y)**2),1)
 
-# returns the list of node's neighbours
+# recursive function: crawls the grid and returns a tree of nodes
 def find_neighbours(root, nodes, tree, diam, cov):
 
 	if len(nodes) == 0:
@@ -35,18 +35,23 @@ def Main():
 
 	root = args.node
 
+
+	# init nodes' list
 	nodes = []
 	for i in range(args.size**2):
 		nodes.append(i)
 
+	# init nodes' tree
 	tree = []
 	find_neighbours(root, nodes, tree, args.size, args.coverage)
 	
+	# write to file
 	f = open("topology3.txt","w")
 	for i in tree:
 		f.write(str(i[0])+" "+str(i[1])+" -50\r\n")
 		f.write(str(i[1])+" "+str(i[0])+" -50\r\n")
 
 	f.close()
+	
 if __name__ == "__main__":
 	Main()

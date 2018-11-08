@@ -4,7 +4,7 @@ import sys ,os
 import random
 t=Tossim([])
 f=sys.stdout #open('./logfile.txt','w')
-SIM_END_TIME= 300 * t.ticksPerSecond()
+SIM_END_TIME= 1000 * t.ticksPerSecond()
 print "TicksPerSecond : ", t.ticksPerSecond(),"\n"
 t.addChannel("Boot",f)
 t.addChannel("RoutingMsg",f)
@@ -13,7 +13,7 @@ t.addChannel("Radio",f)
 #t.addChannel("Serial",f)
 t.addChannel("SRTreeC",f)
 #t.addChannel("PacketQueueC",f)
-for i in range(0,10):
+for i in range(0,20):
 	m=t.getNode(i)
 	m.bootAtTime(10*t.ticksPerSecond() + i)
 topo = open("topology.txt", "r")
@@ -34,10 +34,10 @@ for line in  lines:
 	str1=line.strip()
 	if str1:
 		val=int(str1)
-		for i in range(0,10):
+		for i in range(0,20):
 			t.getNode(i).addNoiseTraceReading(val)
 noiseF.close()
-for i in range(0,10):
+for i in range(0,20):
 	t.getNode(i).createNoiseModel()
 	
 ok=False
@@ -55,8 +55,3 @@ while(h):
 		h=False
 	if(h<=0):
 		ok=False
-print "Node 0 connected with node 1" , r.connected(0,1) , r.connected(1,0)
-print "Node 1 connected with node 2" , r.connected(1,2) , r.connected(2,1)
-print "Node 1 connected with node 4" , r.connected(1,4) , r.connected(4,1)
-print "Node 1 connected with node 7" , r.connected(1,7) , r.connected(7,1)
-print "Node 4 connected with node 5" , r.connected(4,5) , r.connected(5,4)

@@ -1,6 +1,14 @@
 #ifndef SIMPLEROUTINGTREE_H
 #define SIMPLEROUTINGTREE_H
 
+#define MAX_NODES 32
+//#define DBG_MSG
+
+enum{
+	COUNT=0,
+	SUM=1,
+	MAX=2
+};
 
 enum{
 	SENDER_QUEUE_SIZE=5,
@@ -17,14 +25,13 @@ uint16_t AM_NOTIFYPARENTMSG=AM_SIMPLEROUTINGTREEMSG;
 */
 typedef nx_struct RoutingMsg
 {
-	nx_uint16_t senderID;
 	nx_uint8_t depth;
 	//aggr func
 } RoutingMsg;
 
 typedef nx_struct NotifyParentMsg
 {
-	nx_uint16_t check_sum;
+	nx_uint8_t send_values[1];
 } NotifyParentMsg;
 
 #endif
