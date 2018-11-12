@@ -61,8 +61,9 @@ implementation
 	
 	uint8_t curdepth;
 	uint8_t parentID;
-	uint8_t children[1][MAX_NODES];
-	uint8_t send_values[1];
+	uint8_t children[4][MAX_NODES];
+	uint8_t send_values[4];
+	uint8_t raw_data;
 	
 	task void sendRoutingTask();
 	task void sendNotifyTask();
@@ -183,12 +184,8 @@ ___________________________________________________*/
 #ifdef DBG_MSG
 			dbg("Radio" ,"-RadioE- Radio initialized successfully.\n");
 #endif			
-			//existing comments
-			//call RoutingMsgTimer.startOneShot(TIMER_PERIOD_MILLI);
-			//call RoutingMsgTimer.startPeriodic(TIMER_PERIOD_MILLI);
 			
-
-			//Radio Init (200ms)
+			//Radio Init (500ms)
 			if (TOS_NODE_ID==0)
 			{
 				call RoutingMsgTimer.startOneShot(TIMER_FAST_PERIOD);
@@ -272,20 +269,42 @@ ___________________________________________________*/
 		NotifyParentMsg* m;
 		message_t tmp;
 		uint8_t iter = 0;
+
+		time_t t;
+		srand((unsigned)time(&t));
+
 		
+
+
 		if(TOS_NODE_ID==0)
 		{
 			for(iter=0;iter<MAX_NODES;iter++)
+			{
 				send_values[COUNT] += children[COUNT][iter];
+				send_values[SUM] += children[SUM][iter];
+				if(send_values[MAX]<children[MAX][iter]) 
+					send_values[MAX] = children[MAX][iter];
+			}
+			send_values[AVG] = send_values[SUM]/send_values[COUNT];
 			roundCounter += 1;
-			dbg("SRTreeC", "\n_____________________EPOCH___%u_______chksum=%d__________\n\n", roundCounter,send_values[COUNT]);
+			dbg("SRTreeC", "\n_________EPOCH___%u_______count=%d,sum=%d,avg=%d,max=%d_______\n\n", 
+				roundCounter,send_values[COUNT],send_values[SUM],send_values[AVG],send_values[MAX]);
 		}
 		else
 		{
 			m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
 			m->send_values[COUNT]=send_values[COUNT];
+			m->send_values[SUM]=raw_data;
+			
+
 			for(iter=0;iter<MAX_NODES;iter++)
+			{
 				m->send_values[COUNT] += children[COUNT][iter];
+				m->send_values[SUM] += children[SUM][iter];
+				if(send_values[MAX]<children[MAX][iter]) 
+					send_values[MAX] = children[MAX][iter];
+			}
+			m->send_values[MAX] = send_values[MAX];
 			
 #ifdef DBG_MSG
 			dbg("SRTreeC" , "-EpochTimer.fired- Node: %d, check_sum: %d\n", TOS_NODE_ID,send_values[COUNT]);
@@ -303,7 +322,9 @@ ___________________________________________________*/
 			}
 		}
 		send_values[COUNT] = 1;
-		
+		raw_data = (rand()+1) % 50;
+		send_values[SUM] = raw_data;
+		send_values[MAX] = raw_data;
 	}
 
 
@@ -344,7 +365,6 @@ ___________________________________________________*/
 #endif
 		if( enqueueDone==SUCCESS )
 		{
-			//edw exei ena 8ema h eftichia
 			if (call RoutingSendQueue.size()==1)
 			{
 				//dbg("SRTreeC", "-TimerFiredE- SendRoutingTask() posted!\n");
@@ -360,7 +380,7 @@ ___________________________________________________*/
 	}
 
 
-// DATA Packets Handling
+
 
 	event void RoutingAMSend.sendDone(message_t * msg , error_t err)
 	{
@@ -652,6 +672,9 @@ ___________________________________________________*/
 			
 			childID = call NotifyAMPacket.source(&radioNotifyRecPkt);
 			children[COUNT][childID] = mr->send_values[COUNT];
+			children[SUM][childID] = mr->send_values[SUM];
+			children[MAX][childID] = mr->send_values[MAX]; 
+
 
 #ifdef DBG_MSG
 				dbg("SRTreeC" , "___________________________________________________\n");
