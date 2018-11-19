@@ -316,7 +316,7 @@ ___________________________________________________*/
 			{
 				if (call NotifySendQueue.size() == 1)
 				{	
-					//dbg("SRTreeC", "-NotifySendE- SendNotifyTask() posted.\n");
+					dbg("SRTreeC", "-NotifySendE- SendNotifyTask() posted.\n");
 					post sendNotifyTask();
 				}
 			}
@@ -335,7 +335,7 @@ ___________________________________________________*/
 		
 		RoutingMsg* mrpkt;
 		
-		//dbg("SRTreeC", "-TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is %s \n",(RoutingSendBusy)?"Busy":"Free");
+		dbg("SRTreeC", "-TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is %s \n",(RoutingSendBusy)?"Busy":"Free");
 		
 		if(call RoutingSendQueue.full())
 		{
@@ -367,7 +367,7 @@ ___________________________________________________*/
 		{
 			if (call RoutingSendQueue.size()==1)
 			{
-				//dbg("SRTreeC", "-TimerFiredE- SendRoutingTask() posted!\n");
+				dbg("SRTreeC", "-TimerFiredE- SendRoutingTask() posted!\n");
 				post sendRoutingTask();
 			}
 		}
@@ -384,12 +384,12 @@ ___________________________________________________*/
 
 	event void RoutingAMSend.sendDone(message_t * msg , error_t err)
 	{
-		//dbg("SRTreeC", "-RoutingSendE- A Routing package sent... %s \n",(err==SUCCESS)?"True":"False");	
+		dbg("SRTreeC", "-RoutingSendE- A Routing package sent... %s \n",(err==SUCCESS)?"True":"False");	
 		setRoutingSendBusy(FALSE);
 
 		if(!(call RoutingSendQueue.empty()))
 		{
-			//dbg("SRTreeC", "-RoutingSendE- sendRoutingTask() posted!\n");
+			dbg("SRTreeC", "-RoutingSendE- sendRoutingTask() posted!\n");
 			post sendRoutingTask();
 		}
 
@@ -401,7 +401,7 @@ ___________________________________________________*/
 		
 		if(!(call NotifySendQueue.empty()))
 		{
-			//dbg("SRTreeC", "-NotifySendE- sendNotifyTask() posted!\n");
+			dbg("SRTreeC", "-NotifySendE- sendNotifyTask() posted!\n");
 			post sendNotifyTask();
 		}
 	}
@@ -437,7 +437,7 @@ ___________________________________________________*/
 #endif
 		if( enqueueDone== SUCCESS)
 		{
-			//dbg("SRTreeC", "-NotifyRecE- receiveNotifyTask() posted!\n");
+			dbg("SRTreeC", "-NotifyRecE- receiveNotifyTask() posted!\n");
 			post receiveNotifyTask();
 		}
 		else
@@ -468,7 +468,7 @@ ___________________________________________________*/
 			enqueueDone=call RoutingReceiveQueue.enqueue(tmp);
 			if(enqueueDone == SUCCESS)
 			{
-				//dbg("SRTreeC", "-RoutingRecE- receiveRoutingTask() posted!\n");
+				dbg("SRTreeC", "-RoutingRecE- receiveRoutingTask() posted!\n");
 				post receiveRoutingTask();
 			}
 			else
@@ -538,7 +538,7 @@ ___________________________________________________*/
 		
 		if ( sendDone== SUCCESS)
 		{
-			//dbg("SRTreeC","-RoutingSendT- Send was successfull\n");
+			dbg("SRTreeC","-RoutingSendT- Send was successfull\n");
 			setRoutingSendBusy(TRUE);
 		}
 		else

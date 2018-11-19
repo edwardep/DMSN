@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #define MAX_NODES 32
-//#define DBG_MSG
+#define DBG_MSG
 
 enum{
 	COUNT=0,
