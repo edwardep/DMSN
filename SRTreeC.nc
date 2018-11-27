@@ -4,9 +4,6 @@ module SRTreeC
 {
 	uses interface Boot;
 	uses interface SplitControl as RadioControl;
-#ifdef SERIAL_EN
-	uses interface SplitControl as SerialControl;
-#endif
 
 	uses interface AMSend as RoutingAMSend;
 	uses interface AMPacket as RoutingAMPacket;
@@ -16,19 +13,12 @@ module SRTreeC
 	uses interface AMPacket as NotifyAMPacket;
 	uses interface Packet as NotifyPacket;
 
-#ifdef SERIAL_EN
-	uses interface AMSend as SerialAMSend;
-	uses interface AMPacket as SerialAMPacket;
-	uses interface Packet as SerialPacket;
-#endif
 	uses interface Timer<TMilli> as EpochTimer;
 	uses interface Timer<TMilli> as RoutingMsgTimer;
 	uses interface Timer<TMilli> as LostTaskTimer;
-	//uses interface Timer<TMilli> as DelayTimer;
 	
 	uses interface Receive as RoutingReceive;
 	uses interface Receive as NotifyReceive;
-	uses interface Receive as SerialReceive;
 	
 	uses interface PacketQueue as RoutingSendQueue;
 	uses interface PacketQueue as RoutingReceiveQueue;
@@ -43,16 +33,9 @@ implementation
 	message_t radioRoutingSendPkt;
 	message_t radioNotifySendPkt;
 	
-	
-	message_t serialPkt;
-	//message_t serialRecPkt;
-	
 	bool RoutingSendBusy=FALSE;
 	bool NotifySendBusy=FALSE;
 
-#ifdef SERIAL_EN
-	bool serialBusy=FALSE;
-#endif
 	
 	bool lostRoutingSendTask=FALSE;
 	bool lostNotifySendTask=FALSE;
@@ -61,8 +44,10 @@ implementation
 	
 	uint8_t curdepth;
 	uint8_t parentID;
-	uint8_t children[4][MAX_NODES];
-	uint8_t send_values[4];
+
+	// only SUM needs >8bits
+	uint16_t children[3][MAX_NODES];
+	uint16_t send_values[3];
 	uint8_t raw_data;
 	
 	task void sendRoutingTask();
@@ -70,7 +55,6 @@ implementation
 	task void receiveRoutingTask();
 	task void receiveNotifyTask();
 	
-
 /*_________________________________________________
 				UTILITY FUNCTIONS
 ___________________________________________________*/
@@ -78,60 +62,39 @@ ___________________________________________________*/
 	void setLostRoutingSendTask(bool state)
 	{
 		atomic{lostRoutingSendTask=state;}
-#ifdef DBG_MSG
 		dbg("SRTreeC","-F- lostRoutingSendTask = %s\n", (state == TRUE)?"TRUE":"FALSE");
-#endif
 	}
 	
 	void setLostNotifySendTask(bool state)
 	{
 		atomic{lostNotifySendTask=state;}
-#ifdef DBG_MSG
 		dbg("SRTreeC","-F- lostNotifySendTask = %s\n", (state == TRUE)?"TRUE":"FALSE");
-#endif
 	}
 	
 	void setLostNotifyRecTask(bool state)
 	{
 		atomic{lostNotifyRecTask=state;}
-#ifdef DBG_MSG
 		dbg("SRTreeC","-F- lostNotifyRecTask = %s\n", (state == TRUE)?"TRUE":"FALSE");
-#endif
 	}
 	
 	void setLostRoutingRecTask(bool state)
 	{
 		atomic{lostRoutingRecTask=state;}
-#ifdef DBG_MSG
 		dbg("SRTreeC","-F- lostRoutingRecTask = %s\n", (state == TRUE)?"TRUE":"FALSE");
-#endif
 	}
 
-//==========================
 	void setRoutingSendBusy(bool state)
 	{
 		atomic{RoutingSendBusy=state;}
-#ifdef DBG_MSG
-		dbg("SRTreeC","-F- RoutingRadio is %s\n", (state == TRUE)?"Busy":"Free");
-#endif
+		dbg("RoutingMsg","-F- RoutingRadio is %s\n", (state == TRUE)?"Busy":"Free");
 	}
 	
 	void setNotifySendBusy(bool state)
 	{
 		atomic{NotifySendBusy=state;}
-#ifdef DBG_MSG
-		dbg("SRTreeC","-F- NotifyRadio is %s\n", (state == TRUE)?"Busy":"Free");
-#endif
+		dbg("NotifyMsg","-F- NotifyRadio is %s\n", (state == TRUE)?"Busy":"Free");
 	}
-#ifdef SERIAL_EN
-	void setSerialBusy(bool state)
-	{
-		serialBusy=state;
-#ifdef DBG_MSG
-		dbg("SRTreeC","-F- SerialRadio is %s\n", (state == TRUE)?"Busy":"Free");
-#endif
-	}
-#endif
+
 
 /*_________________________________________________
 				EVENT HANDLERS
@@ -146,45 +109,33 @@ ___________________________________________________*/
 		//SIGNALS INIT
 		setRoutingSendBusy(FALSE);
 		setNotifySendBusy(FALSE);
-#ifdef SERIAL_EN
-		setSerialBusy(FALSE);
-#endif
+
 		//EPOCH INIT
 		roundCounter = 0;
-		
-
-		//SERIAL INIT
 		if(TOS_NODE_ID==0)
 		{
-#ifdef SERIAL_EN
-			call SerialControl.start();
-#endif
 			curdepth=0;
 			parentID=0;
-			send_values[COUNT] = 1;
-#ifdef DBG_MSG
 			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d ,check_sum= %d\n", curdepth , parentID, send_values[COUNT]);
-#endif
 		}
 		else
 		{
 			curdepth=-1;
 			parentID=-1;
-			send_values[COUNT] = 1;
-#ifdef DBG_MSG
 			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d ,check_sum= %d\n", curdepth , parentID, send_values[COUNT]);
-#endif
 		}
+		send_values[COUNT] = 1;
+		send_values[SUM] = 0;
+		send_values[MAX] = 0;
 	}
-	
+/**
+	@RADIO.START(DONE)
+**/	
 	event void RadioControl.startDone(error_t err)
 	{
 		if (err == SUCCESS)
 		{
-#ifdef DBG_MSG
 			dbg("Radio" ,"-RadioE- Radio initialized successfully.\n");
-#endif			
-			
 			//Radio Init (500ms)
 			if (TOS_NODE_ID==0)
 			{
@@ -193,89 +144,67 @@ ___________________________________________________*/
 		}
 		else
 		{
-#ifdef DBG_MSG
 			dbg("Radio" , "-RadioE- Radio initialization failed! Retrying...\n");
-#endif
 			call RadioControl.start();
 		}
 	}
-	
+/**
+	@RADIO.STOP(DONE)
+**/		
 	event void RadioControl.stopDone(error_t err)
 	{ 
-#ifdef DBG_MSG
 		dbg("Radio", "-RadioE- Radio stopped!\n");
-#endif
 	}
-
-	event void SerialControl.startDone(error_t err)
-	{
-		if (err == SUCCESS)
-		{
-#ifdef DBG_MSG
-			dbg("Serial" , "-SerialE- Serial initialized successfully! \n");
-#endif
-		}
-		else
-		{
-#ifdef DBG_MSG
-			dbg("Serial" , "-SerialE- Serial initialization failed! Retrying... \n");
-#endif
-			call SerialControl.start();
-		}
-	}
-
-	event void SerialControl.stopDone(error_t err)
-	{
-#ifdef DBG_MSG
-		dbg("Serial", "-SerialE- Serial stopped! \n");
-#endif
-	}
-	
+/**
+	@LOST_TASK EVENT
+**/	
 	event void LostTaskTimer.fired()
 	{
-#ifdef DBG_MSG
-		dbg("SRTreeC","_________________> LostTaskTimer fired!\n");
-#endif
 		if (lostRoutingSendTask)
 		{
 			post sendRoutingTask();
 			setLostRoutingSendTask(FALSE);
 		}
-		
 		if (lostNotifySendTask)
 		{
 			post sendNotifyTask();
 			setLostNotifySendTask(FALSE);
 		}
-		
 		if (lostRoutingRecTask)
 		{
 			post receiveRoutingTask();
 			setLostRoutingRecTask(FALSE);
 		}
-		
 		if (lostNotifyRecTask)
 		{
 			post receiveNotifyTask();
 			setLostNotifyRecTask(FALSE);
 		}
 	}
-	
-	
-
+/**
+	@DATA_SEND EVENT
+**/	
 	event void EpochTimer.fired()
 	{
 		
 		NotifyParentMsg* m;
 		message_t tmp;
 		uint8_t iter = 0;
-
+		uint16_t data_avg = 0;
 		time_t t;
 		srand((unsigned)time(&t));
 
+		// Sense Data and store to local array
+		raw_data = (rand()+1) % 50;
+		send_values[COUNT] = 1;
+		send_values[SUM] = raw_data;
+		send_values[MAX] = raw_data;
 		
+		dbg("SRTreeC","raw_data(%d): %d\n",TOS_NODE_ID,raw_data);
 
-
+		// Aggregate subtree values
+		// if RootNode  -> Print_Data 
+		// else 		-> Forward Data to Parent
 		if(TOS_NODE_ID==0)
 		{
 			for(iter=0;iter<MAX_NODES;iter++)
@@ -285,30 +214,29 @@ ___________________________________________________*/
 				if(send_values[MAX]<children[MAX][iter]) 
 					send_values[MAX] = children[MAX][iter];
 			}
-			send_values[AVG] = send_values[SUM]/send_values[COUNT];
+			data_avg = send_values[SUM]/send_values[COUNT];
 			roundCounter += 1;
 			dbg("SRTreeC", "\n_________EPOCH___%u_______count=%d,sum=%d,avg=%d,max=%d_______\n\n", 
-				roundCounter,send_values[COUNT],send_values[SUM],send_values[AVG],send_values[MAX]);
+				roundCounter,send_values[COUNT],send_values[SUM],data_avg,send_values[MAX]);
 		}
 		else
 		{
 			m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
 			m->send_values[COUNT]=send_values[COUNT];
-			m->send_values[SUM]=raw_data;
-			
+			m->send_values[SUM]=send_values[SUM];
 
 			for(iter=0;iter<MAX_NODES;iter++)
 			{
 				m->send_values[COUNT] += children[COUNT][iter];
 				m->send_values[SUM] += children[SUM][iter];
-				if(send_values[MAX]<children[MAX][iter]) 
+				if(send_values[MAX] < children[MAX][iter]) 
 					send_values[MAX] = children[MAX][iter];
 			}
 			m->send_values[MAX] = send_values[MAX];
 			
-#ifdef DBG_MSG
-			dbg("SRTreeC" , "-EpochTimer.fired- Node: %d, check_sum: %d\n", TOS_NODE_ID,send_values[COUNT]);
-#endif
+
+			dbg("NotifyMsg" , "-EpochTimer.fired- Node: %d, check_sum: %d\n", TOS_NODE_ID,send_values[COUNT]);
+
 			call NotifyAMPacket.setDestination(&tmp, parentID);
 			call NotifyPacket.setPayloadLength(&tmp,sizeof(NotifyParentMsg));
 					
@@ -316,18 +244,17 @@ ___________________________________________________*/
 			{
 				if (call NotifySendQueue.size() == 1)
 				{	
-					dbg("SRTreeC", "-NotifySendE- SendNotifyTask() posted.\n");
+					dbg("NotifyMsg", "-NotifySendE- SendNotifyTask() posted.\n");
 					post sendNotifyTask();
 				}
 			}
 		}
-		send_values[COUNT] = 1;
-		raw_data = (rand()+1) % 50;
-		send_values[SUM] = raw_data;
-		send_values[MAX] = raw_data;
+
 	}
 
-
+/**
+	@BROADCASTING EVENT
+**/
 	event void RoutingMsgTimer.fired()
 	{
 		message_t tmp;
@@ -335,88 +262,73 @@ ___________________________________________________*/
 		
 		RoutingMsg* mrpkt;
 		
-		dbg("SRTreeC", "-TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is %s \n",(RoutingSendBusy)?"Busy":"Free");
+		dbg("RoutingMsg", "-TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is %s \n",(RoutingSendBusy)?"Busy":"Free");
 		
 		if(call RoutingSendQueue.full())
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC", "-TimerFiredE- RoutingSendQueue is full.\n");
-#endif
+			dbg("RoutingMsg", "-TimerFiredE- RoutingSendQueue is full.\n");
 			return;
 		}
 		
 		mrpkt = (RoutingMsg*) (call RoutingPacket.getPayload(&tmp, sizeof(RoutingMsg)));
 		if(mrpkt==NULL)
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-TimerFiredE- No valid payload.\n");
-#endif
+			dbg("RoutingMsg","-TimerFiredE- No valid payload.\n");
 			return;
 		}
-		atomic{
-			//mrpkt->senderID=TOS_NODE_ID;
-			mrpkt->depth = curdepth;
-		}
+
+		atomic{mrpkt->depth = curdepth;}
+
 		call RoutingAMPacket.setDestination(&tmp, AM_BROADCAST_ADDR);
 		call RoutingPacket.setPayloadLength(&tmp, sizeof(RoutingMsg));
 		enqueueDone = call RoutingSendQueue.enqueue(tmp);
-#ifdef DBG_MSG
-		dbg("SRTreeC" , "-TimerFiredE- Broadcasting RoutingMsg\n");
-#endif
+
+		dbg("RoutingMsg" , "-TimerFiredE- Broadcasting RoutingMsg\n");
+
 		if( enqueueDone==SUCCESS )
 		{
 			if (call RoutingSendQueue.size()==1)
 			{
-				dbg("SRTreeC", "-TimerFiredE- SendRoutingTask() posted!\n");
+				dbg("RoutingMsg", "-TimerFiredE- SendRoutingTask() posted!\n");
 				post sendRoutingTask();
 			}
 		}
 		else
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-TimerFiredE- Msg failed to be enqueued in RoutingSendQueue.");
-#endif
+			dbg("RoutingMsg","-TimerFiredE- Msg failed to be enqueued in RoutingSendQueue.");
 		}		
 	}
-
-
-
-
-	event void RoutingAMSend.sendDone(message_t * msg , error_t err)
-	{
-		dbg("SRTreeC", "-RoutingSendE- A Routing package sent... %s \n",(err==SUCCESS)?"True":"False");	
-		setRoutingSendBusy(FALSE);
-
-		if(!(call RoutingSendQueue.empty()))
-		{
-			dbg("SRTreeC", "-RoutingSendE- sendRoutingTask() posted!\n");
-			post sendRoutingTask();
-		}
-
-	}
-	
+/**
+	@RADIO.SEND(NOTIFY_MSG)
+**/
 	event void NotifyAMSend.sendDone(message_t *msg , error_t err)
 	{
 		setNotifySendBusy(FALSE);
 		
 		if(!(call NotifySendQueue.empty()))
 		{
-			dbg("SRTreeC", "-NotifySendE- sendNotifyTask() posted!\n");
+			dbg("NotifyMsg", "-NotifySendE- sendNotifyTask() posted!\n");
 			post sendNotifyTask();
 		}
 	}
-	
-	event void SerialAMSend.sendDone(message_t* msg , error_t err)
+/**
+	@RADIO.SEND(ROUTING_MSG)
+**/
+	event void RoutingAMSend.sendDone(message_t * msg , error_t err)
 	{
-		if ( &serialPkt == msg)
+		dbg("RoutingMsg", "-RoutingSendE- A Routing package sent... %s \n",(err==SUCCESS)?"True":"False");	
+		setRoutingSendBusy(FALSE);
+
+		if(!(call RoutingSendQueue.empty()))
 		{
-			//dbg("Serial" , "Serial Package sent %s \n", (err==SUCCESS)?"True":"False");
-			setSerialBusy(FALSE);
+			dbg("RoutingMsg", "-RoutingSendE- sendRoutingTask() posted!\n");
+			post sendRoutingTask();
 		}
+
 	}
-	
-
-
+/**
+	@RADIO.RECEIVE(NOTIFY_MSG)
+**/
 	event message_t* NotifyReceive.receive( message_t* msg , void* payload , uint8_t len)
 	{
 		error_t enqueueDone;
@@ -424,32 +336,29 @@ ___________________________________________________*/
 		uint16_t msource;
 		
 		msource = call NotifyAMPacket.source(msg);
-#ifdef DBG_MSG
-		dbg("SRTreeC", "-NotifyRecE- check_sum: %u, Source: %u \n",((NotifyParentMsg*) payload)->send_values[COUNT], msource);
-#endif
-		atomic
-		{
-			memcpy(&tmp,msg,sizeof(message_t)); //tmp = *(message_t*)msg;
-		}
+
+		dbg("NotifyMsg", "-NotifyRecE- check_sum: %u, Source: %u \n",((NotifyParentMsg*) payload)->send_values[COUNT], msource);
+
+		atomic{ memcpy(&tmp,msg,sizeof(message_t));}
+
 		enqueueDone = call NotifyReceiveQueue.enqueue(tmp);
-#ifdef DBG_MSG
-		dbg("SRTreeC", "NotifyReceiveQueue Size: %d\n",call NotifyReceiveQueue.size());
-#endif
+
+		dbg("NotifyMsg", "NotifyReceiveQueue Size: %d\n",call NotifyReceiveQueue.size());
+
 		if( enqueueDone== SUCCESS)
 		{
-			dbg("SRTreeC", "-NotifyRecE- receiveNotifyTask() posted!\n");
+			dbg("NotifyMsg", "-NotifyRecE- receiveNotifyTask() posted!\n");
 			post receiveNotifyTask();
 		}
 		else
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-NotifyRecE- Msg failed to be enqueued in NotifyReceiveQueue.");	
-#endif	
+			dbg("NotifyMsg","-NotifyRecE- Msg failed to be enqueued in NotifyReceiveQueue.");	
 		}
 		return msg;
 	}
-
-
+/**
+	@RADIO.RECEIVE(ROUTING_MSG)
+**/
 	event message_t* RoutingReceive.receive( message_t * msg , void * payload, uint8_t len)
 	{
 		error_t enqueueDone;
@@ -458,64 +367,47 @@ ___________________________________________________*/
 		
 		msource =call RoutingAMPacket.source(msg);
 
+		// Receive Routing Msg only from Top to Bottom
 		if(curdepth > (((RoutingMsg*) payload)->depth))
 		{
-			//dbg("SRTreeC", "-RoutingRecE- SenderID: %u, Source: %u\n",((RoutingMsg*) payload)->senderID ,  msource);
+	
+			atomic{ memcpy(&tmp,msg,sizeof(message_t));}
 
-			atomic{
-				memcpy(&tmp,msg,sizeof(message_t)); //tmp=*(message_t*)msg;
-			}
 			enqueueDone=call RoutingReceiveQueue.enqueue(tmp);
 			if(enqueueDone == SUCCESS)
 			{
-				dbg("SRTreeC", "-RoutingRecE- receiveRoutingTask() posted!\n");
+				dbg("RoutingMsg", "-RoutingRecE- receiveRoutingTask() posted!\n");
 				post receiveRoutingTask();
 			}
 			else
 			{
-#ifdef DBG_MSG
-				dbg("SRTreeC","-RoutingRecE- Msg failed to be enqueued in RoutingReceiveQueue.");		
-#endif		
+				dbg("RoutingMsg","-RoutingRecE- Msg failed to be enqueued in RoutingReceiveQueue.");		
 			}
-
 		}
 		return msg;
-
 	}
-	
-	event message_t* SerialReceive.receive(message_t* msg , void* payload , uint8_t len)
-	{
-#ifdef DBG_MSG
-		// when receiving from serial port
-		dbg("Serial","Received msg from serial port \n");
-#endif
-		return msg;
-	}
-	
 
 /*_________________________________________________
 				TASK IMPLEMENTATIONS
 ___________________________________________________*/
-	
+
+/**
+	@SEND_ROUTING_TASK() | Send a Routing Msg over the Radio
+**/
 	task void sendRoutingTask()
 	{
 		uint8_t mlen;
 		uint16_t mdest;
 		error_t sendDone;
-		//message_t radioRoutingSendPkt;
 		
 		if (call RoutingSendQueue.empty())
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-RoutingSendT- Queue is empty.\n");
-#endif
+			dbg("RoutingMsg","-RoutingSendT- Queue is empty.\n");
 			return;
 		}
 		if(RoutingSendBusy)
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-RoutingSendT- RoutingRadio is Busy.\n");
-#endif
+			dbg("RoutingMsg","-RoutingSendT- RoutingRadio is Busy.\n");
 			setLostRoutingSendTask(TRUE);
 			call LostTaskTimer.startOneShot(SEND_CHECK_MILLIS);
 			return;
@@ -528,9 +420,7 @@ ___________________________________________________*/
 
 		if(mlen!=sizeof(RoutingMsg))
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-RoutingSendT- Unknown message. \n");
-#endif
+			dbg("RoutingMsg","-RoutingSendT- Unknown message. \n");
 			return;
 		}
 
@@ -538,14 +428,12 @@ ___________________________________________________*/
 		
 		if ( sendDone== SUCCESS)
 		{
-			dbg("SRTreeC","-RoutingSendT- Send was successfull\n");
+			dbg("RoutingMsg","-RoutingSendT- Send was successfull\n");
 			setRoutingSendBusy(TRUE);
 		}
 		else
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-RoutingSendT- Send failed!\n");
-#endif
+			dbg("RoutingMsg","-RoutingSendT- Send failed!\n");
 		}
 
 		if(TOS_NODE_ID==0)
@@ -553,28 +441,60 @@ ___________________________________________________*/
 			call EpochTimer.startPeriodicAt(EPOCH_MILLI/(curdepth+1),EPOCH_MILLI);
 		}	
 	}
+/**
+	@RECEIVE_ROUTING_TASK() | Updates PID-Depth, starts Periodic Timer and re-broadcasts
+**/
+	task void receiveRoutingTask()
+	{
+		uint8_t len;
+		message_t radioRoutingRecPkt;
+		
+		radioRoutingRecPkt= call RoutingReceiveQueue.dequeue();
+		
+		len= call RoutingPacket.payloadLength(&radioRoutingRecPkt);
+		
+		//if received msg is RoutingMsg		
+		if(len == sizeof(RoutingMsg))
+		{
+			RoutingMsg * mpkt = (RoutingMsg*) (call RoutingPacket.getPayload(&radioRoutingRecPkt,len));
+			
+			// set Parent and Depth
+			parentID= call RoutingAMPacket.source(&radioRoutingRecPkt);
+			curdepth= mpkt->depth + 1;
 
+
+			call EpochTimer.startPeriodicAt((EPOCH_MILLI/(curdepth+1))-TOS_NODE_ID*20,EPOCH_MILLI);
+
+			// broadcast to posible children
+			call RoutingMsgTimer.startOneShot(INSTANT);
+		}
+		else // received msg is not RoutingMsg
+		{
+			dbg("RoutingMsg","-RoutingRecT- Not a RoutingMsg.\n");
+			setLostRoutingRecTask(TRUE);
+			call LostTaskTimer.startOneShot(SEND_CHECK_MILLIS);
+			return;
+		}
+	}
+/**
+	@SEND_NOTIFY_TASK() | Sends a packet over the Radio
+**/
 	task void sendNotifyTask()
 	{
 		uint8_t mlen;
 		error_t sendDone;
 		uint16_t mdest;
 		NotifyParentMsg* mpayload;
-		//message_t radioNotifySendPkt;
 
 		if (call NotifySendQueue.empty())
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-NotifySendT- Queue is empty.\n");
-#endif
+			dbg("NotifyMsg","-NotifySendT- Queue is empty.\n");
 			return;
 		}
 		
 		if(NotifySendBusy==TRUE)
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-NotifySendT- NotifyRadio is Busy.\n");
-#endif
+			dbg("NotifyMsg","-NotifySendT- NotifyRadio is Busy.\n");
 			setLostNotifySendTask(TRUE);
 			call LostTaskTimer.startOneShot(SEND_CHECK_MILLIS);
 			return;
@@ -586,81 +506,32 @@ ___________________________________________________*/
 		
 		if(mlen!= sizeof(NotifyParentMsg))
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC", "-NotifySendT- Unknown message.\n");
-#endif
+			dbg("NotifyMsg", "-NotifySendT- Unknown message.\n");
 			return;
 		}
-		
+		// Unicast to Parent
 		mdest= call NotifyAMPacket.destination(&radioNotifySendPkt);
-		
+		// Send Packet over Radio
 		sendDone=call NotifyAMSend.send(mdest,&radioNotifySendPkt, mlen);
 		
-		if ( sendDone== SUCCESS)
+		if (sendDone== SUCCESS)
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-NotifySendT- Send was successfull.\n");
-#endif
+			dbg("NotifyMsg","-NotifySendT- Send was successfull.\n");
 			setNotifySendBusy(TRUE);
 		}
 		else
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-NotifySendT- Send failed.\n");
-#endif
+			dbg("NotifyMsg","-NotifySendT- Send failed.\n");
 		}
 	}
-	
-
-
-	task void receiveRoutingTask()
-	{
-		//message_t tmp;
-		uint8_t len;
-		message_t radioRoutingRecPkt;
-		
-		radioRoutingRecPkt= call RoutingReceiveQueue.dequeue();
-		
-		len= call RoutingPacket.payloadLength(&radioRoutingRecPkt);
-		
-		
-		//if received msg is RoutingMsg		
-		if(len == sizeof(RoutingMsg))
-		{
-			//NotifyParentMsg* m;
-			RoutingMsg * mpkt = (RoutingMsg*) (call RoutingPacket.getPayload(&radioRoutingRecPkt,len));
-			
-			//dbg("SRTreeC" , "-RoutingRecT- senderID= %d , depth= %d \n", mpkt->senderID , mpkt->depth);
-			
-			// set Parent and depth
-			parentID= call RoutingAMPacket.source(&radioRoutingRecPkt);
-			curdepth= mpkt->depth + 1;
-
-			call EpochTimer.startPeriodicAt((EPOCH_MILLI/(curdepth+1))-TOS_NODE_ID*20,EPOCH_MILLI);
-
-			//boradcasting to posible children
-			call RoutingMsgTimer.startOneShot(TIMER_FAST_PERIOD);
-		}
-		else // received msg is not RoutingMsg
-		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-RoutingRecT- Not a RoutingMsg.\n");
-#endif
-			setLostRoutingRecTask(TRUE);
-			call LostTaskTimer.startOneShot(SEND_CHECK_MILLIS);
-			return;
-		}
-		
-	}
-
+/**
+	@RECEIVE_NOTIFY_TASK() | Receives packets from children-Nodes and stores their values
+**/
 	task void receiveNotifyTask()
 	{
-		//message_t tmp;
 		uint8_t len;
 		message_t radioNotifyRecPkt;
 		uint8_t childID;
-
-
 
 		radioNotifyRecPkt= call NotifyReceiveQueue.dequeue();
 
@@ -673,31 +544,14 @@ ___________________________________________________*/
 			childID = call NotifyAMPacket.source(&radioNotifyRecPkt);
 			children[COUNT][childID] = mr->send_values[COUNT];
 			children[SUM][childID] = mr->send_values[SUM];
-			children[MAX][childID] = mr->send_values[MAX]; 
-
-
-#ifdef DBG_MSG
-				dbg("SRTreeC" , "___________________________________________________\n");
-				dbg("SRTreeC" , "old_sum: %d\n",send_values[COUNT]);
-				dbg("SRTreeC" , "+%d \n", mr->send_values[COUNT]);
-#endif				
-				//send_values[COUNT] = mr->send_values[COUNT];
-#ifdef DBG_MSG
-				dbg("SRTreeC" , "new_sum: %d\n" , send_values[COUNT]);
-				dbg("SRTreeC" , "___________________________________________________\n");
-#endif
-				
+			children[MAX][childID] = mr->send_values[MAX]; 		
 		}
 		else
 		{
-#ifdef DBG_MSG
-			dbg("SRTreeC","-NotifyRecT- Not a NotifyMsg.\n");
-#endif
+			dbg("NotifyMsg","-NotifyRecT- Not a NotifyMsg.\n");
 			setLostNotifyRecTask(TRUE);
 			call LostTaskTimer.startOneShot(SEND_CHECK_MILLIS);
 			return;
 		}
-		
 	}
-	
 }

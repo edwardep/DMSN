@@ -10,8 +10,7 @@
 enum{
 	COUNT=0,
 	SUM=1,
-	AVG=2,
-	MAX=3
+	MAX=2
 };
 
 enum{
@@ -22,11 +21,10 @@ enum{
 	AM_NOTIFYPARENTMSG=12,
 	SEND_CHECK_MILLIS=3000,
 	EPOCH_MILLI= 61440,
-	TIMER_FAST_PERIOD=1024
+	TIMER_FAST_PERIOD=1024,
+	INSTANT = 0
 };
-/*uint16_t AM_ROUTINGMSG=AM_SIMPLEROUTINGTREEMSG;
-uint16_t AM_NOTIFYPARENTMSG=AM_SIMPLEROUTINGTREEMSG;
-*/
+
 typedef nx_struct RoutingMsg
 {
 	nx_uint8_t depth;
@@ -35,7 +33,7 @@ typedef nx_struct RoutingMsg
 
 typedef nx_struct NotifyParentMsg
 {
-	nx_uint8_t send_values[4];
+	nx_uint16_t send_values[3];
 } NotifyParentMsg;
 
 #endif

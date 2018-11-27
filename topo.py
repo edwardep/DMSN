@@ -29,11 +29,10 @@ def Main():
 
 	parser = argparse.ArgumentParser(usage='python topo.py D C')
 	parser.add_argument('size', type=int, help='an integer for grid size')
-	parser.add_argument('coverage', type=float, help='a float for coverage distance')
-	parser.add_argument('node',type=int)                
+	parser.add_argument('coverage', type=float, help='a float for coverage distance')              
 	args = parser.parse_args()
 
-	root = args.node
+	root = 0
 
 
 	# init nodes' list
@@ -48,8 +47,9 @@ def Main():
 	# write to file
 	f = open("topology3.txt","w")
 	for i in tree:
-		f.write(str(i[0])+" "+str(i[1])+" -50\r\n")
-		f.write(str(i[1])+" "+str(i[0])+" -50\r\n")
+		if i[0] == i[1]: continue
+		f.write(str(i[0])+" "+str(i[1])+" -50.0\r\n")
+		f.write(str(i[1])+" "+str(i[0])+" -50.0\r\n")
 
 	f.close()
 	

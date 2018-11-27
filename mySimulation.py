@@ -6,20 +6,23 @@ t=Tossim([])
 f=sys.stdout #open('./logfile.txt','w')
 SIM_END_TIME= 500 * t.ticksPerSecond()
 print "TicksPerSecond : ", t.ticksPerSecond(),"\n"
-t.addChannel("Boot",f)
-t.addChannel("RoutingMsg",f)
-t.addChannel("NotifyParentMsg",f)
-t.addChannel("Radio",f)
-#t.addChannel("Serial",f)
+#t.addChannel("Boot",f)
+#t.addChannel("RoutingMsg",f)
+#t.addChannel("NotifyMsg",f)
+#t.addChannel("Radio",f)
 t.addChannel("SRTreeC",f)
-#t.addChannel("PacketQueueC",f)
-for i in range(0,5):
+
+#_____________________
+total_nodes = 9
+#_____________________
+
+for i in range(0,total_nodes):
 	m=t.getNode(i)
 	m.bootAtTime(10*t.ticksPerSecond() + i)
 topo = open("topology.txt", "r")
 if topo is None:
 	print "Topology file not opened!!! \n"
-	
+
 r=t.radio()
 lines = topo.readlines()
 for line in lines:
@@ -34,10 +37,10 @@ for line in  lines:
 	str1=line.strip()
 	if str1:
 		val=int(str1)
-		for i in range(0,5):
+		for i in range(0,total_nodes):
 			t.getNode(i).addNoiseTraceReading(val)
 noiseF.close()
-for i in range(0,5):
+for i in range(0,total_nodes):
 	t.getNode(i).createNoiseModel()
 	
 ok=False
