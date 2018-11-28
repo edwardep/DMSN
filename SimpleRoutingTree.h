@@ -22,7 +22,8 @@ enum{
 	SEND_CHECK_MILLIS=3000,
 	EPOCH_MILLI= 61440,
 	TIMER_FAST_PERIOD=1024,
-	INSTANT = 0
+	INSTANT = 0,
+	MAX_DEPTH=32
 };
 
 typedef nx_struct RoutingMsg

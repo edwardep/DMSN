@@ -45,11 +45,11 @@ def Main():
 	find_neighbours(root, nodes, tree, args.size, args.coverage)
 	
 	# write to file
-	f = open("topology3.txt","w")
+	f = open("topology.txt","w")
 	for i in tree:
 		if i[0] == i[1]: continue
-		f.write(str(i[0])+" "+str(i[1])+" -50.0\r\n")
-		f.write(str(i[1])+" "+str(i[0])+" -50.0\r\n")
+		f.write(str(i[0])+" "+str(i[1])+" 0.0\r\n")
+		f.write(str(i[1])+" "+str(i[0])+" 0.0\r\n")
 
 	f.close()
 	

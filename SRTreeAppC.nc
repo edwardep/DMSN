@@ -8,7 +8,7 @@ implementation{
 	components DelugeC;
 #endif
 
-	components MainC, ActiveMessageC;
+	components MainC, ActiveMessageC,RandomC,RandomMlcgC;
 	components new TimerMilliC() as RoutingMsgTimerC;
 	components new TimerMilliC() as LostTaskTimerC;
 	components new TimerMilliC() as EpochTimerC;
@@ -44,4 +44,7 @@ implementation{
 	SRTreeC.RoutingReceiveQueue->RoutingReceiveQueueC;
 	SRTreeC.NotifySendQueue->NotifySendQueueC;
 	SRTreeC.NotifyReceiveQueue->NotifyReceiveQueueC;
+
+	SRTreeC.Random->RandomC.Random;
+	SRTreeC.Seed->RandomMlcgC.SeedInit;
 }

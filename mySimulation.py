@@ -13,7 +13,7 @@ print "TicksPerSecond : ", t.ticksPerSecond(),"\n"
 t.addChannel("SRTreeC",f)
 
 #_____________________
-total_nodes = 9
+total_nodes = 16
 #_____________________
 
 for i in range(0,total_nodes):

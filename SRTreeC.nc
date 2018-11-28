@@ -25,6 +25,10 @@ module SRTreeC
 	
 	uses interface PacketQueue as NotifySendQueue;
 	uses interface PacketQueue as NotifyReceiveQueue;
+
+	uses interface Random;
+	uses interface ParameterInit<uint16_t> as Seed;
+
 }
 implementation
 {
@@ -104,7 +108,7 @@ ___________________________________________________*/
 	{
 		//RADIO INIT
 		call RadioControl.start();
-		
+		call LostTaskTimer.startPeriodic(500000);
 
 		//SIGNALS INIT
 		setRoutingSendBusy(FALSE);
@@ -191,16 +195,17 @@ ___________________________________________________*/
 		message_t tmp;
 		uint8_t iter = 0;
 		uint16_t data_avg = 0;
-		time_t t;
-		srand((unsigned)time(&t));
+		//srand(TOS_NODE_ID);
 
 		// Sense Data and store to local array
-		raw_data = (rand()+1) % 50;
+		//raw_data = (rand()+1) % 50;
+		call Seed.init((call LostTaskTimer.getNow())+TOS_NODE_ID);
+		raw_data=(call Random.rand16())%50;
 		send_values[COUNT] = 1;
 		send_values[SUM] = raw_data;
 		send_values[MAX] = raw_data;
 		
-		dbg("SRTreeC","raw_data(%d): %d\n",TOS_NODE_ID,raw_data);
+		//dbg("SRTreeC","raw_data(%d): %d\n",TOS_NODE_ID,raw_data);
 
 		// Aggregate subtree values
 		// if RootNode  -> Print_Data 
@@ -438,7 +443,7 @@ ___________________________________________________*/
 
 		if(TOS_NODE_ID==0)
 		{
-			call EpochTimer.startPeriodicAt(EPOCH_MILLI/(curdepth+1),EPOCH_MILLI);
+			call EpochTimer.startPeriodic(EPOCH_MILLI);
 		}	
 	}
 /**
@@ -447,6 +452,8 @@ ___________________________________________________*/
 	task void receiveRoutingTask()
 	{
 		uint8_t len;
+		uint16_t time_window;
+		uint16_t random_interval;
 		message_t radioRoutingRecPkt;
 		
 		radioRoutingRecPkt= call RoutingReceiveQueue.dequeue();
@@ -462,8 +469,14 @@ ___________________________________________________*/
 			parentID= call RoutingAMPacket.source(&radioRoutingRecPkt);
 			curdepth= mpkt->depth + 1;
 
+			// generate random number for conflict avoidance
+			call Seed.init((call LostTaskTimer.getNow())+TOS_NODE_ID);
+			random_interval = ((call Random.rand16())%MAX_NODES)*10;
 
-			call EpochTimer.startPeriodicAt((EPOCH_MILLI/(curdepth+1))-TOS_NODE_ID*20,EPOCH_MILLI);
+			// calculate TAG-like fixed time-window
+			time_window  = (EPOCH_MILLI/MAX_DEPTH)*curdepth;
+
+			call EpochTimer.startPeriodicAt(-time_window-random_interval,EPOCH_MILLI);
 
 			// broadcast to posible children
 			call RoutingMsgTimer.startOneShot(INSTANT);
