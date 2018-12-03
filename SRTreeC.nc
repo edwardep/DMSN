@@ -15,7 +15,7 @@ module SRTreeC
 
 	uses interface Timer<TMilli> as EpochTimer;
 	uses interface Timer<TMilli> as RoutingMsgTimer;
-	uses interface Timer<TMilli> as LostTaskTimer;
+	uses interface Timer<TMilli> as RandomTimer;
 	
 	uses interface Receive as RoutingReceive;
 	uses interface Receive as NotifyReceive;
@@ -39,19 +39,16 @@ implementation
 	
 	bool RoutingSendBusy=FALSE;
 	bool NotifySendBusy=FALSE;
-
-	
-	bool lostRoutingSendTask=FALSE;
-	bool lostNotifySendTask=FALSE;
-	bool lostRoutingRecTask=FALSE;
-	bool lostNotifyRecTask=FALSE;
 	
 	uint8_t curdepth;
 	uint8_t parentID;
 
-	// only SUM needs >8bits
+	// local aggr values [32]
 	uint16_t children[3][MAX_NODES];
-	uint16_t send_values[3];
+
+	uint16_t sum_value;
+	uint8_t count_value;
+	uint8_t max_value;
 	uint8_t raw_data;
 	
 	task void sendRoutingTask();
@@ -63,29 +60,6 @@ implementation
 				UTILITY FUNCTIONS
 ___________________________________________________*/
 	
-	void setLostRoutingSendTask(bool state)
-	{
-		atomic{lostRoutingSendTask=state;}
-		dbg("SRTreeC","-F- lostRoutingSendTask = %s\n", (state == TRUE)?"TRUE":"FALSE");
-	}
-	
-	void setLostNotifySendTask(bool state)
-	{
-		atomic{lostNotifySendTask=state;}
-		dbg("SRTreeC","-F- lostNotifySendTask = %s\n", (state == TRUE)?"TRUE":"FALSE");
-	}
-	
-	void setLostNotifyRecTask(bool state)
-	{
-		atomic{lostNotifyRecTask=state;}
-		dbg("SRTreeC","-F- lostNotifyRecTask = %s\n", (state == TRUE)?"TRUE":"FALSE");
-	}
-	
-	void setLostRoutingRecTask(bool state)
-	{
-		atomic{lostRoutingRecTask=state;}
-		dbg("SRTreeC","-F- lostRoutingRecTask = %s\n", (state == TRUE)?"TRUE":"FALSE");
-	}
 
 	void setRoutingSendBusy(bool state)
 	{
@@ -108,7 +82,7 @@ ___________________________________________________*/
 	{
 		//RADIO INIT
 		call RadioControl.start();
-		call LostTaskTimer.startPeriodic(500000);
+		call RandomTimer.startPeriodic(5000000);
 
 		//SIGNALS INIT
 		setRoutingSendBusy(FALSE);
@@ -120,17 +94,17 @@ ___________________________________________________*/
 		{
 			curdepth=0;
 			parentID=0;
-			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d ,check_sum= %d\n", curdepth , parentID, send_values[COUNT]);
+			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d ,check_sum= %d\n", curdepth , parentID, count_value);
 		}
 		else
 		{
 			curdepth=-1;
 			parentID=-1;
-			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d ,check_sum= %d\n", curdepth , parentID, send_values[COUNT]);
+			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d ,check_sum= %d\n", curdepth , parentID, count_value);
 		}
-		send_values[COUNT] = 1;
-		send_values[SUM] = 0;
-		send_values[MAX] = 0;
+	 	sum_value=0;
+		count_value=1;
+		max_value=0;
 	}
 /**
 	@RADIO.START(DONE)
@@ -140,7 +114,7 @@ ___________________________________________________*/
 		if (err == SUCCESS)
 		{
 			dbg("Radio" ,"-RadioE- Radio initialized successfully.\n");
-			//Radio Init (500ms)
+			//Radio Init (1 sec)
 			if (TOS_NODE_ID==0)
 			{
 				call RoutingMsgTimer.startOneShot(TIMER_FAST_PERIOD);
@@ -160,30 +134,11 @@ ___________________________________________________*/
 		dbg("Radio", "-RadioE- Radio stopped!\n");
 	}
 /**
-	@LOST_TASK EVENT
-**/	
-	event void LostTaskTimer.fired()
+	@TIMER used in Rand.Seed
+**/		
+	event void RandomTimer.fired()
 	{
-		if (lostRoutingSendTask)
-		{
-			post sendRoutingTask();
-			setLostRoutingSendTask(FALSE);
-		}
-		if (lostNotifySendTask)
-		{
-			post sendNotifyTask();
-			setLostNotifySendTask(FALSE);
-		}
-		if (lostRoutingRecTask)
-		{
-			post receiveRoutingTask();
-			setLostRoutingRecTask(FALSE);
-		}
-		if (lostNotifyRecTask)
-		{
-			post receiveNotifyTask();
-			setLostNotifyRecTask(FALSE);
-		}
+		dbg("SRTreeC", "RandomTimer fired!\n");
 	}
 /**
 	@DATA_SEND EVENT
@@ -195,17 +150,15 @@ ___________________________________________________*/
 		message_t tmp;
 		uint8_t iter = 0;
 		uint16_t data_avg = 0;
-		//srand(TOS_NODE_ID);
-
-		// Sense Data and store to local array
-		//raw_data = (rand()+1) % 50;
-		call Seed.init((call LostTaskTimer.getNow())+TOS_NODE_ID);
-		raw_data=(call Random.rand16())%50;
-		send_values[COUNT] = 1;
-		send_values[SUM] = raw_data;
-		send_values[MAX] = raw_data;
 		
-		//dbg("SRTreeC","raw_data(%d): %d\n",TOS_NODE_ID,raw_data);
+		// Sense Data and store to local array
+		// raw_data = random(1-50)
+		call Seed.init((call RandomTimer.getNow())+TOS_NODE_ID);
+		raw_data=(call Random.rand16())%50;
+		
+		sum_value=raw_data;
+		count_value=1;
+		max_value=raw_data;
 
 		// Aggregate subtree values
 		// if RootNode  -> Print_Data 
@@ -214,33 +167,35 @@ ___________________________________________________*/
 		{
 			for(iter=0;iter<MAX_NODES;iter++)
 			{
-				send_values[COUNT] += children[COUNT][iter];
-				send_values[SUM] += children[SUM][iter];
-				if(send_values[MAX]<children[MAX][iter]) 
-					send_values[MAX] = children[MAX][iter];
+				count_value += children[COUNT][iter];
+				sum_value+= children[SUM][iter];
+				if(max_value<children[MAX][iter]) 
+					max_value = children[MAX][iter];
+
 			}
-			data_avg = send_values[SUM]/send_values[COUNT];
+			data_avg= sum_value/count_value;
+			
 			roundCounter += 1;
-			dbg("SRTreeC", "\n_________EPOCH___%u_______count=%d,sum=%d,avg=%d,max=%d_______\n\n", 
-				roundCounter,send_values[COUNT],send_values[SUM],data_avg,send_values[MAX]);
+			 dbg("SRTreeC", "\n_________EPOCH___%u_______count=%d,sum=%d,avg=%d,max=%d_______\n\n", 
+			 	roundCounter,count_value,sum_value,data_avg,max_value);
+
 		}
 		else
 		{
 			m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
-			m->send_values[COUNT]=send_values[COUNT];
-			m->send_values[SUM]=send_values[SUM];
+			m->count_value=count_value;
+			m->sum_value=sum_value;
 
 			for(iter=0;iter<MAX_NODES;iter++)
 			{
-				m->send_values[COUNT] += children[COUNT][iter];
-				m->send_values[SUM] += children[SUM][iter];
-				if(send_values[MAX] < children[MAX][iter]) 
-					send_values[MAX] = children[MAX][iter];
+				m->count_value += children[COUNT][iter];
+				m->sum_value+= children[SUM][iter];
+				if(max_value<children[MAX][iter]) 
+					max_value = children[MAX][iter];
 			}
-			m->send_values[MAX] = send_values[MAX];
+			m->max_value = max_value;
 			
-
-			dbg("NotifyMsg" , "-EpochTimer.fired- Node: %d, check_sum: %d\n", TOS_NODE_ID,send_values[COUNT]);
+			dbg("NotifyMsg" , "-EpochTimer.fired- Node: %d, count: %d\n", TOS_NODE_ID,count_value);
 
 			call NotifyAMPacket.setDestination(&tmp, parentID);
 			call NotifyPacket.setPayloadLength(&tmp,sizeof(NotifyParentMsg));
@@ -254,7 +209,6 @@ ___________________________________________________*/
 				}
 			}
 		}
-
 	}
 
 /**
@@ -342,7 +296,7 @@ ___________________________________________________*/
 		
 		msource = call NotifyAMPacket.source(msg);
 
-		dbg("NotifyMsg", "-NotifyRecE- check_sum: %u, Source: %u \n",((NotifyParentMsg*) payload)->send_values[COUNT], msource);
+		dbg("NotifyMsg", "-NotifyRecE- count: %u, Source: %u \n",((NotifyParentMsg*) payload)->count_value, msource);
 
 		atomic{ memcpy(&tmp,msg,sizeof(message_t));}
 
@@ -372,7 +326,7 @@ ___________________________________________________*/
 		
 		msource =call RoutingAMPacket.source(msg);
 
-		// Receive Routing Msg only from Top to Bottom
+		// Receive Routing Msg Top-Down
 		if(curdepth > (((RoutingMsg*) payload)->depth))
 		{
 	
@@ -413,8 +367,6 @@ ___________________________________________________*/
 		if(RoutingSendBusy)
 		{
 			dbg("RoutingMsg","-RoutingSendT- RoutingRadio is Busy.\n");
-			setLostRoutingSendTask(TRUE);
-			call LostTaskTimer.startOneShot(SEND_CHECK_MILLIS);
 			return;
 		}
 		
@@ -470,7 +422,7 @@ ___________________________________________________*/
 			curdepth= mpkt->depth + 1;
 
 			// generate random number for conflict avoidance
-			call Seed.init((call LostTaskTimer.getNow())+TOS_NODE_ID);
+			call Seed.init((call RandomTimer.getNow())+TOS_NODE_ID);
 			random_interval = ((call Random.rand16())%MAX_NODES)*10;
 
 			// calculate TAG-like fixed time-window
@@ -484,8 +436,6 @@ ___________________________________________________*/
 		else // received msg is not RoutingMsg
 		{
 			dbg("RoutingMsg","-RoutingRecT- Not a RoutingMsg.\n");
-			setLostRoutingRecTask(TRUE);
-			call LostTaskTimer.startOneShot(SEND_CHECK_MILLIS);
 			return;
 		}
 	}
@@ -508,8 +458,6 @@ ___________________________________________________*/
 		if(NotifySendBusy==TRUE)
 		{
 			dbg("NotifyMsg","-NotifySendT- NotifyRadio is Busy.\n");
-			setLostNotifySendTask(TRUE);
-			call LostTaskTimer.startOneShot(SEND_CHECK_MILLIS);
 			return;
 		}
 		
@@ -555,15 +503,13 @@ ___________________________________________________*/
 			NotifyParentMsg* mr = (NotifyParentMsg*) (call NotifyPacket.getPayload(&radioNotifyRecPkt,len));
 			
 			childID = call NotifyAMPacket.source(&radioNotifyRecPkt);
-			children[COUNT][childID] = mr->send_values[COUNT];
-			children[SUM][childID] = mr->send_values[SUM];
-			children[MAX][childID] = mr->send_values[MAX]; 		
+			children[COUNT][childID] = mr->count_value;
+			children[SUM][childID] = mr->sum_value;
+			children[MAX][childID] = mr->max_value; 
 		}
 		else
 		{
 			dbg("NotifyMsg","-NotifyRecT- Not a NotifyMsg.\n");
-			setLostNotifyRecTask(TRUE);
-			call LostTaskTimer.startOneShot(SEND_CHECK_MILLIS);
 			return;
 		}
 	}

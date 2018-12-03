@@ -1,0 +1,1063 @@
+TicksPerSecond :  10000000000 
+
+  1   0   0.0
+  0   1   0.0
+  3   0   0.0
+  0   3   0.0
+  4   0   0.0
+  0   4   0.0
+  2   1   0.0
+  1   2   0.0
+  5   1   0.0
+  1   5   0.0
+  7   5   0.0
+  5   7   0.0
+  8   5   0.0
+  5   8   0.0
+  6   7   0.0
+  7   6   0.0
+0:0:10.000000000 DEBUG (0): -F- RoutingRadio is Free
+0:0:10.000000000 DEBUG (0): -F- NotifyRadio is Free
+0:0:10.000000000 DEBUG (0): -BootE- curdepth = 0  ,  parentID= 0 ,check_sum= 0
+0:0:10.000000000 DEBUG (1): -F- RoutingRadio is Free
+0:0:10.000000000 DEBUG (1): -F- NotifyRadio is Free
+0:0:10.000000000 DEBUG (1): -BootE- curdepth = 255  ,  parentID= 255 ,check_sum= 0
+0:0:10.000000000 DEBUG (2): -F- RoutingRadio is Free
+0:0:10.000000000 DEBUG (2): -F- NotifyRadio is Free
+0:0:10.000000000 DEBUG (2): -BootE- curdepth = 255  ,  parentID= 255 ,check_sum= 0
+0:0:10.000000000 DEBUG (3): -F- RoutingRadio is Free
+0:0:10.000000000 DEBUG (3): -F- NotifyRadio is Free
+0:0:10.000000000 DEBUG (3): -BootE- curdepth = 255  ,  parentID= 255 ,check_sum= 0
+0:0:10.000000000 DEBUG (4): -F- RoutingRadio is Free
+0:0:10.000000000 DEBUG (4): -F- NotifyRadio is Free
+0:0:10.000000000 DEBUG (4): -BootE- curdepth = 255  ,  parentID= 255 ,check_sum= 0
+0:0:10.000000000 DEBUG (5): -F- RoutingRadio is Free
+0:0:10.000000000 DEBUG (5): -F- NotifyRadio is Free
+0:0:10.000000000 DEBUG (5): -BootE- curdepth = 255  ,  parentID= 255 ,check_sum= 0
+0:0:10.000000000 DEBUG (6): -F- RoutingRadio is Free
+0:0:10.000000000 DEBUG (6): -F- NotifyRadio is Free
+0:0:10.000000000 DEBUG (6): -BootE- curdepth = 255  ,  parentID= 255 ,check_sum= 0
+0:0:10.000000000 DEBUG (7): -F- RoutingRadio is Free
+0:0:10.000000000 DEBUG (7): -F- NotifyRadio is Free
+0:0:10.000000000 DEBUG (7): -BootE- curdepth = 255  ,  parentID= 255 ,check_sum= 0
+0:0:10.000000000 DEBUG (8): -F- RoutingRadio is Free
+0:0:10.000000000 DEBUG (8): -F- NotifyRadio is Free
+0:0:10.000000000 DEBUG (8): -BootE- curdepth = 255  ,  parentID= 255 ,check_sum= 0
+0:0:10.000000010 DEBUG (0): -RadioE- Radio initialized successfully.
+0:0:10.000000010 DEBUG (1): -RadioE- Radio initialized successfully.
+0:0:10.000000010 DEBUG (2): -RadioE- Radio initialized successfully.
+0:0:10.000000010 DEBUG (3): -RadioE- Radio initialized successfully.
+0:0:10.000000010 DEBUG (4): -RadioE- Radio initialized successfully.
+0:0:10.000000010 DEBUG (5): -RadioE- Radio initialized successfully.
+0:0:10.000000010 DEBUG (6): -RadioE- Radio initialized successfully.
+0:0:10.000000010 DEBUG (7): -RadioE- Radio initialized successfully.
+0:0:10.000000010 DEBUG (8): -RadioE- Radio initialized successfully.
+0:0:11.000000010 DEBUG (0): -TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is Free 
+0:0:11.000000010 DEBUG (0): -TimerFiredE- Broadcasting RoutingMsg
+0:0:11.000000010 DEBUG (0): -TimerFiredE- SendRoutingTask() posted!
+0:0:11.000000020 DEBUG (0): -RoutingSendT- Send was successfull
+0:0:11.000000020 DEBUG (0): -F- RoutingRadio is Busy
+0:0:11.005386341 DEBUG (4): -RoutingRecE- receiveRoutingTask() posted!
+0:0:11.005386341 DEBUG (1): -RoutingRecE- receiveRoutingTask() posted!
+0:0:11.005386341 DEBUG (3): -RoutingRecE- receiveRoutingTask() posted!
+0:0:11.005386361 DEBUG (4): -TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is Free 
+0:0:11.005386361 DEBUG (4): -TimerFiredE- Broadcasting RoutingMsg
+0:0:11.005386361 DEBUG (4): -TimerFiredE- SendRoutingTask() posted!
+0:0:11.005386361 DEBUG (1): -TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is Free 
+0:0:11.005386361 DEBUG (1): -TimerFiredE- Broadcasting RoutingMsg
+0:0:11.005386361 DEBUG (1): -TimerFiredE- SendRoutingTask() posted!
+0:0:11.005386361 DEBUG (3): -TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is Free 
+0:0:11.005386361 DEBUG (3): -TimerFiredE- Broadcasting RoutingMsg
+0:0:11.005386361 DEBUG (3): -TimerFiredE- SendRoutingTask() posted!
+0:0:11.005386371 DEBUG (4): -RoutingSendT- Send was successfull
+0:0:11.005386371 DEBUG (4): -F- RoutingRadio is Busy
+0:0:11.005386371 DEBUG (1): -RoutingSendT- Send was successfull
+0:0:11.005386371 DEBUG (1): -F- RoutingRadio is Busy
+0:0:11.005386371 DEBUG (3): -RoutingSendT- Send was successfull
+0:0:11.005386371 DEBUG (3): -F- RoutingRadio is Busy
+0:0:11.005554186 DEBUG (0): -RoutingSendE- A Routing package sent... True 
+0:0:11.005554186 DEBUG (0): -F- RoutingRadio is Free
+0:0:11.008682250 DEBUG (5): -RoutingRecE- receiveRoutingTask() posted!
+0:0:11.008682250 DEBUG (2): -RoutingRecE- receiveRoutingTask() posted!
+0:0:11.008682270 DEBUG (5): -TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is Free 
+0:0:11.008682270 DEBUG (5): -TimerFiredE- Broadcasting RoutingMsg
+0:0:11.008682270 DEBUG (5): -TimerFiredE- SendRoutingTask() posted!
+0:0:11.008682270 DEBUG (2): -TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is Free 
+0:0:11.008682270 DEBUG (2): -TimerFiredE- Broadcasting RoutingMsg
+0:0:11.008682270 DEBUG (2): -TimerFiredE- SendRoutingTask() posted!
+0:0:11.008682280 DEBUG (5): -RoutingSendT- Send was successfull
+0:0:11.008682280 DEBUG (5): -F- RoutingRadio is Busy
+0:0:11.008682280 DEBUG (2): -RoutingSendT- Send was successfull
+0:0:11.008682280 DEBUG (2): -F- RoutingRadio is Busy
+0:0:11.008850096 DEBUG (1): -RoutingSendE- A Routing package sent... True 
+0:0:11.008850096 DEBUG (1): -F- RoutingRadio is Free
+0:0:11.008880613 DEBUG (3): -RoutingSendE- A Routing package sent... True 
+0:0:11.008880613 DEBUG (3): -F- RoutingRadio is Free
+0:0:11.012023905 DEBUG (4): -RoutingSendE- A Routing package sent... True 
+0:0:11.012023905 DEBUG (4): -F- RoutingRadio is Free
+0:0:11.014251705 DEBUG (8): -RoutingRecE- receiveRoutingTask() posted!
+0:0:11.014251705 DEBUG (7): -RoutingRecE- receiveRoutingTask() posted!
+0:0:11.014251725 DEBUG (8): -TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is Free 
+0:0:11.014251725 DEBUG (8): -TimerFiredE- Broadcasting RoutingMsg
+0:0:11.014251725 DEBUG (8): -TimerFiredE- SendRoutingTask() posted!
+0:0:11.014251725 DEBUG (7): -TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is Free 
+0:0:11.014251725 DEBUG (7): -TimerFiredE- Broadcasting RoutingMsg
+0:0:11.014251725 DEBUG (7): -TimerFiredE- SendRoutingTask() posted!
+0:0:11.014251735 DEBUG (8): -RoutingSendT- Send was successfull
+0:0:11.014251735 DEBUG (8): -F- RoutingRadio is Busy
+0:0:11.014251735 DEBUG (7): -RoutingSendT- Send was successfull
+0:0:11.014251735 DEBUG (7): -F- RoutingRadio is Busy
+0:0:11.014419551 DEBUG (5): -RoutingSendE- A Routing package sent... True 
+0:0:11.014419551 DEBUG (5): -F- RoutingRadio is Free
+0:0:11.017608619 DEBUG (2): -RoutingSendE- A Routing package sent... True 
+0:0:11.017608619 DEBUG (2): -F- RoutingRadio is Free
+0:0:11.022125225 DEBUG (8): -RoutingSendE- A Routing package sent... True 
+0:0:11.022125225 DEBUG (8): -F- RoutingRadio is Free
+0:0:11.023101781 DEBUG (6): -RoutingRecE- receiveRoutingTask() posted!
+0:0:11.023101801 DEBUG (6): -TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is Free 
+0:0:11.023101801 DEBUG (6): -TimerFiredE- Broadcasting RoutingMsg
+0:0:11.023101801 DEBUG (6): -TimerFiredE- SendRoutingTask() posted!
+0:0:11.023101811 DEBUG (6): -RoutingSendT- Send was successfull
+0:0:11.023101811 DEBUG (6): -F- RoutingRadio is Busy
+0:0:11.023269627 DEBUG (7): -RoutingSendE- A Routing package sent... True 
+0:0:11.023269627 DEBUG (7): -F- RoutingRadio is Free
+0:0:11.033767643 DEBUG (6): -RoutingSendE- A Routing package sent... True 
+0:0:11.033767643 DEBUG (6): -F- RoutingRadio is Free
+0:1:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:1:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:1:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:1:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:1:2.334426840 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:1:2.334426840 DEBUG (7): NotifyReceiveQueue Size: 1
+0:1:2.334426840 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:1:2.334594686 DEBUG (6): -F- NotifyRadio is Free
+0:1:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:1:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:1:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:1:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:1:4.131744343 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:1:4.131744343 DEBUG (5): NotifyReceiveQueue Size: 1
+0:1:4.131744343 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:1:4.131912189 DEBUG (7): -F- NotifyRadio is Free
+0:1:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:1:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:1:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:1:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:1:4.369720453 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:1:4.369720453 DEBUG (5): NotifyReceiveQueue Size: 1
+0:1:4.369720453 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:1:4.369888299 DEBUG (8): -F- NotifyRadio is Free
+0:1:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:1:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:1:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:1:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:1:6.126419067 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:1:6.126419067 DEBUG (1): NotifyReceiveQueue Size: 1
+0:1:6.126419067 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:1:6.126586913 DEBUG (2): -F- NotifyRadio is Free
+0:1:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:1:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:1:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:1:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:1:6.234832758 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:1:6.234832758 DEBUG (1): NotifyReceiveQueue Size: 1
+0:1:6.234832758 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:1:6.235000604 DEBUG (5): -F- NotifyRadio is Free
+0:1:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:1:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:1:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:1:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:1:7.833068804 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:1:7.833068804 DEBUG (0): NotifyReceiveQueue Size: 1
+0:1:7.833068804 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:1:7.833236650 DEBUG (3): -F- NotifyRadio is Free
+0:1:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:1:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:1:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:1:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:1:7.963317865 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:1:7.963317865 DEBUG (0): NotifyReceiveQueue Size: 1
+0:1:7.963317865 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:1:7.963485711 DEBUG (1): -F- NotifyRadio is Free
+0:1:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:1:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:1:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:1:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:1:8.070327756 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:1:8.070327756 DEBUG (0): NotifyReceiveQueue Size: 1
+0:1:8.070327756 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:1:8.070495602 DEBUG (4): -F- NotifyRadio is Free
+0:1:11.000000010 DEBUG (0): 
+_________EPOCH___1_______count=9,sum=181,avg=20,max=47_______
+
+0:2:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:2:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:2:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:2:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:2:2.326171884 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:2:2.326171884 DEBUG (7): NotifyReceiveQueue Size: 1
+0:2:2.326171884 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:2:2.326339729 DEBUG (6): -F- NotifyRadio is Free
+0:2:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:2:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:2:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:2:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:2:4.129699677 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:2:4.129699677 DEBUG (5): NotifyReceiveQueue Size: 1
+0:2:4.129699677 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:2:4.129867523 DEBUG (7): -F- NotifyRadio is Free
+0:2:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:2:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:2:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:2:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:2:4.372894263 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:2:4.372894263 DEBUG (5): NotifyReceiveQueue Size: 1
+0:2:4.372894263 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:2:4.373062108 DEBUG (8): -F- NotifyRadio is Free
+0:2:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:2:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:2:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:2:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:2:6.132842980 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:2:6.132842980 DEBUG (1): NotifyReceiveQueue Size: 1
+0:2:6.132842980 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:2:6.133010826 DEBUG (2): -F- NotifyRadio is Free
+0:2:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:2:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:2:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:2:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:2:6.240905721 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:2:6.240905721 DEBUG (1): NotifyReceiveQueue Size: 1
+0:2:6.240905721 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:2:6.241073567 DEBUG (5): -F- NotifyRadio is Free
+0:2:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:2:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:2:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:2:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:2:7.827972399 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:2:7.827972399 DEBUG (0): NotifyReceiveQueue Size: 1
+0:2:7.827972399 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:2:7.828140244 DEBUG (3): -F- NotifyRadio is Free
+0:2:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:2:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:2:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:2:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:2:7.962585448 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:2:7.962585448 DEBUG (0): NotifyReceiveQueue Size: 1
+0:2:7.962585448 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:2:7.962753294 DEBUG (1): -F- NotifyRadio is Free
+0:2:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:2:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:2:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:2:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:2:8.070251462 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:2:8.070251462 DEBUG (0): NotifyReceiveQueue Size: 1
+0:2:8.070251462 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:2:8.070419308 DEBUG (4): -F- NotifyRadio is Free
+0:2:11.000000010 DEBUG (0): 
+_________EPOCH___2_______count=9,sum=199,avg=22,max=35_______
+
+0:3:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:3:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:3:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:3:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:3:2.335281328 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:3:2.335281328 DEBUG (7): NotifyReceiveQueue Size: 1
+0:3:2.335281328 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:3:2.335449173 DEBUG (6): -F- NotifyRadio is Free
+0:3:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:3:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:3:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:3:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:3:4.131759602 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:3:4.131759602 DEBUG (5): NotifyReceiveQueue Size: 1
+0:3:4.131759602 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:3:4.131927447 DEBUG (7): -F- NotifyRadio is Free
+0:3:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:3:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:3:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:3:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:3:4.371932965 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:3:4.371932965 DEBUG (5): NotifyReceiveQueue Size: 1
+0:3:4.371932965 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:3:4.372100810 DEBUG (8): -F- NotifyRadio is Free
+0:3:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:3:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:3:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:3:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:3:6.131469697 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:3:6.131469697 DEBUG (1): NotifyReceiveQueue Size: 1
+0:3:6.131469697 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:3:6.131637543 DEBUG (2): -F- NotifyRadio is Free
+0:3:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:3:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:3:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:3:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:3:6.238769503 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:3:6.238769503 DEBUG (1): NotifyReceiveQueue Size: 1
+0:3:6.238769503 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:3:6.238937349 DEBUG (5): -F- NotifyRadio is Free
+0:3:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:3:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:3:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:3:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:3:7.830062841 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:3:7.830062841 DEBUG (0): NotifyReceiveQueue Size: 1
+0:3:7.830062841 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:3:7.830230686 DEBUG (3): -F- NotifyRadio is Free
+0:3:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:3:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:3:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:3:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:3:7.961853030 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:3:7.961853030 DEBUG (0): NotifyReceiveQueue Size: 1
+0:3:7.961853030 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:3:7.962020876 DEBUG (1): -F- NotifyRadio is Free
+0:3:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:3:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:3:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:3:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:3:8.070343015 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:3:8.070343015 DEBUG (0): NotifyReceiveQueue Size: 1
+0:3:8.070343015 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:3:8.070510860 DEBUG (4): -F- NotifyRadio is Free
+0:3:11.000000010 DEBUG (0): 
+_________EPOCH___3_______count=9,sum=259,avg=28,max=49_______
+
+0:4:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:4:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:4:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:4:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:4:2.329757678 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:4:2.329757678 DEBUG (7): NotifyReceiveQueue Size: 1
+0:4:2.329757678 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:4:2.329925524 DEBUG (6): -F- NotifyRadio is Free
+0:4:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:4:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:4:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:4:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:4:4.122879038 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:4:4.122879038 DEBUG (5): NotifyReceiveQueue Size: 1
+0:4:4.122879038 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:4:4.123046884 DEBUG (7): -F- NotifyRadio is Free
+0:4:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:4:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:4:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:4:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:4:4.369125364 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:4:4.369125364 DEBUG (5): NotifyReceiveQueue Size: 1
+0:4:4.369125364 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:4:4.369293210 DEBUG (8): -F- NotifyRadio is Free
+0:4:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:4:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:4:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:4:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:4:6.129379255 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:4:6.129379255 DEBUG (1): NotifyReceiveQueue Size: 1
+0:4:6.129379255 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:4:6.129547101 DEBUG (2): -F- NotifyRadio is Free
+0:4:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:4:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:4:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:4:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:4:6.233871460 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:4:6.233871460 DEBUG (1): NotifyReceiveQueue Size: 1
+0:4:6.233871460 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:4:6.234039306 DEBUG (5): -F- NotifyRadio is Free
+0:4:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:4:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:4:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:4:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:4:7.831924402 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:4:7.831924402 DEBUG (0): NotifyReceiveQueue Size: 1
+0:4:7.831924402 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:4:7.832092248 DEBUG (3): -F- NotifyRadio is Free
+0:4:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:4:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:4:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:4:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:4:7.961868289 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:4:7.961868289 DEBUG (0): NotifyReceiveQueue Size: 1
+0:4:7.961868289 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:4:7.962036135 DEBUG (1): -F- NotifyRadio is Free
+0:4:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:4:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:4:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:4:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:4:8.073059063 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:4:8.073059063 DEBUG (0): NotifyReceiveQueue Size: 1
+0:4:8.073059063 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:4:8.073226909 DEBUG (4): -F- NotifyRadio is Free
+0:4:11.000000010 DEBUG (0): 
+_________EPOCH___4_______count=9,sum=141,avg=15,max=41_______
+
+0:5:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:5:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:5:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:5:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:5:2.329742420 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:5:2.329742420 DEBUG (7): NotifyReceiveQueue Size: 1
+0:5:2.329742420 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:5:2.329910265 DEBUG (6): -F- NotifyRadio is Free
+0:5:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:5:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:5:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:5:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:5:4.124557495 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:5:4.124557495 DEBUG (5): NotifyReceiveQueue Size: 1
+0:5:4.124557495 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:5:4.124725341 DEBUG (7): -F- NotifyRadio is Free
+0:5:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:5:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:5:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:5:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:5:4.372879004 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:5:4.372879004 DEBUG (5): NotifyReceiveQueue Size: 1
+0:5:4.372879004 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:5:4.373046850 DEBUG (8): -F- NotifyRadio is Free
+0:5:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:5:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:5:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:5:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:5:6.130081155 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:5:6.130081155 DEBUG (1): NotifyReceiveQueue Size: 1
+0:5:6.130081155 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:5:6.130249001 DEBUG (2): -F- NotifyRadio is Free
+0:5:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:5:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:5:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:5:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:5:6.234588619 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:5:6.234588619 DEBUG (1): NotifyReceiveQueue Size: 1
+0:5:6.234588619 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:5:6.234756465 DEBUG (5): -F- NotifyRadio is Free
+0:5:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:5:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:5:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:5:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:5:7.831497158 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:5:7.831497158 DEBUG (0): NotifyReceiveQueue Size: 1
+0:5:7.831497158 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:5:7.831665004 DEBUG (3): -F- NotifyRadio is Free
+0:5:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:5:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:5:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:5:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:5:7.968383754 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:5:7.968383754 DEBUG (0): NotifyReceiveQueue Size: 1
+0:5:7.968383754 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:5:7.968551600 DEBUG (1): -F- NotifyRadio is Free
+0:5:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:5:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:5:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:5:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:5:8.077117877 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:5:8.077117877 DEBUG (0): NotifyReceiveQueue Size: 1
+0:5:8.077117877 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:5:8.077285723 DEBUG (4): -F- NotifyRadio is Free
+0:5:11.000000010 DEBUG (0): 
+_________EPOCH___5_______count=9,sum=301,avg=33,max=43_______
+
+0:6:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:6:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:6:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:6:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:6:2.328186032 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:6:2.328186032 DEBUG (7): NotifyReceiveQueue Size: 1
+0:6:2.328186032 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:6:2.328353878 DEBUG (6): -F- NotifyRadio is Free
+0:6:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:6:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:6:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:6:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:6:4.131057701 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:6:4.131057701 DEBUG (5): NotifyReceiveQueue Size: 1
+0:6:4.131057701 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:6:4.131225547 DEBUG (7): -F- NotifyRadio is Free
+0:6:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:6:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:6:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:6:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:6:4.368667603 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:6:4.368667603 DEBUG (5): NotifyReceiveQueue Size: 1
+0:6:4.368667603 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:6:4.368835449 DEBUG (8): -F- NotifyRadio is Free
+0:6:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:6:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:6:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:6:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:6:6.131805389 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:6:6.131805389 DEBUG (1): NotifyReceiveQueue Size: 1
+0:6:6.131805389 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:6:6.131973234 DEBUG (2): -F- NotifyRadio is Free
+0:6:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:6:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:6:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:6:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:6:6.233642580 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:6:6.233642580 DEBUG (1): NotifyReceiveQueue Size: 1
+0:6:6.233642580 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:6:6.233810425 DEBUG (5): -F- NotifyRadio is Free
+0:6:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:6:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:6:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:6:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:6:7.831024139 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:6:7.831024139 DEBUG (0): NotifyReceiveQueue Size: 1
+0:6:7.831024139 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:6:7.831191984 DEBUG (3): -F- NotifyRadio is Free
+0:6:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:6:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:6:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:6:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:6:7.962539672 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:6:7.962539672 DEBUG (0): NotifyReceiveQueue Size: 1
+0:6:7.962539672 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:6:7.962707517 DEBUG (1): -F- NotifyRadio is Free
+0:6:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:6:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:6:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:6:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:6:8.071014397 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:6:8.071014397 DEBUG (0): NotifyReceiveQueue Size: 1
+0:6:8.071014397 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:6:8.071182243 DEBUG (4): -F- NotifyRadio is Free
+0:6:11.000000010 DEBUG (0): 
+_________EPOCH___6_______count=9,sum=83,avg=9,max=33_______
+
+0:7:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:7:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:7:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:7:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:7:2.334854084 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:7:2.334854084 DEBUG (7): NotifyReceiveQueue Size: 1
+0:7:2.334854084 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:7:2.335021930 DEBUG (6): -F- NotifyRadio is Free
+0:7:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:7:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:7:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:7:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:7:4.128051737 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:7:4.128051737 DEBUG (5): NotifyReceiveQueue Size: 1
+0:7:4.128051737 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:7:4.128219583 DEBUG (7): -F- NotifyRadio is Free
+0:7:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:7:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:7:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:7:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:7:4.369903558 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:7:4.369903558 DEBUG (5): NotifyReceiveQueue Size: 1
+0:7:4.369903558 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:7:4.370071403 DEBUG (8): -F- NotifyRadio is Free
+0:7:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:7:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:7:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:7:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:7:6.128417957 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:7:6.128417957 DEBUG (1): NotifyReceiveQueue Size: 1
+0:7:6.128417957 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:7:6.128585803 DEBUG (2): -F- NotifyRadio is Free
+0:7:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:7:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:7:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:7:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:7:6.236038196 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:7:6.236038196 DEBUG (1): NotifyReceiveQueue Size: 1
+0:7:6.236038196 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:7:6.236206041 DEBUG (5): -F- NotifyRadio is Free
+0:7:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:7:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:7:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:7:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:7:7.827850329 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:7:7.827850329 DEBUG (0): NotifyReceiveQueue Size: 1
+0:7:7.827850329 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:7:7.828018175 DEBUG (3): -F- NotifyRadio is Free
+0:7:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:7:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:7:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:7:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:7:7.962722776 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:7:7.962722776 DEBUG (0): NotifyReceiveQueue Size: 1
+0:7:7.962722776 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:7:7.962890622 DEBUG (1): -F- NotifyRadio is Free
+0:7:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:7:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:7:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:7:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:7:8.074844331 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:7:8.074844331 DEBUG (0): NotifyReceiveQueue Size: 1
+0:7:8.074844331 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:7:8.075012177 DEBUG (4): -F- NotifyRadio is Free
+0:7:11.000000010 DEBUG (0): 
+_________EPOCH___7_______count=9,sum=307,avg=34,max=47_______
+
+0:8:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:8:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:8:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:8:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:8:2.326217660 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:8:2.326217660 DEBUG (7): NotifyReceiveQueue Size: 1
+0:8:2.326217660 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:8:2.326385506 DEBUG (6): -F- NotifyRadio is Free
+0:8:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:8:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:8:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:8:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:8:4.132003741 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:8:4.132003741 DEBUG (5): NotifyReceiveQueue Size: 1
+0:8:4.132003741 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:8:4.132171586 DEBUG (7): -F- NotifyRadio is Free
+0:8:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:8:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:8:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:8:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:8:4.370605458 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:8:4.370605458 DEBUG (5): NotifyReceiveQueue Size: 1
+0:8:4.370605458 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:8:4.370773303 DEBUG (8): -F- NotifyRadio is Free
+0:8:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:8:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:8:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:8:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:8:6.129547101 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:8:6.129547101 DEBUG (1): NotifyReceiveQueue Size: 1
+0:8:6.129547101 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:8:6.129714947 DEBUG (2): -F- NotifyRadio is Free
+0:8:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:8:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:8:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:8:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:8:6.236221300 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:8:6.236221300 DEBUG (1): NotifyReceiveQueue Size: 1
+0:8:6.236221300 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:8:6.236389146 DEBUG (5): -F- NotifyRadio is Free
+0:8:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:8:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:8:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:8:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:8:7.826400753 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:8:7.826400753 DEBUG (0): NotifyReceiveQueue Size: 1
+0:8:7.826400753 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:8:7.826568598 DEBUG (3): -F- NotifyRadio is Free
+0:8:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:8:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:8:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:8:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:8:7.966812108 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:8:7.966812108 DEBUG (0): NotifyReceiveQueue Size: 1
+0:8:7.966812108 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:8:7.966979953 DEBUG (1): -F- NotifyRadio is Free
+0:8:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:8:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:8:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:8:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:8:8.070617671 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:8:8.070617671 DEBUG (0): NotifyReceiveQueue Size: 1
+0:8:8.070617671 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:8:8.070785517 DEBUG (4): -F- NotifyRadio is Free
+0:8:11.000000010 DEBUG (0): 
+_________EPOCH___8_______count=9,sum=167,avg=18,max=46_______
+
+0:9:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:9:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:9:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:9:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:9:2.334320030 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:9:2.334320030 DEBUG (7): NotifyReceiveQueue Size: 1
+0:9:2.334320030 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:9:2.334487875 DEBUG (6): -F- NotifyRadio is Free
+0:9:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:9:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:9:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:9:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:9:4.130844080 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:9:4.130844080 DEBUG (5): NotifyReceiveQueue Size: 1
+0:9:4.130844080 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:9:4.131011925 DEBUG (7): -F- NotifyRadio is Free
+0:9:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:9:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:9:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:9:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:9:4.373168919 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:9:4.373168919 DEBUG (5): NotifyReceiveQueue Size: 1
+0:9:4.373168919 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:9:4.373336765 DEBUG (8): -F- NotifyRadio is Free
+0:9:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:9:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:9:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:9:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:9:6.129196151 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:9:6.129196151 DEBUG (1): NotifyReceiveQueue Size: 1
+0:9:6.129196151 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:9:6.129363997 DEBUG (2): -F- NotifyRadio is Free
+0:9:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:9:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:9:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:9:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:9:6.236633285 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:9:6.236633285 DEBUG (1): NotifyReceiveQueue Size: 1
+0:9:6.236633285 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:9:6.236801131 DEBUG (5): -F- NotifyRadio is Free
+0:9:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:9:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:9:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:9:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:9:7.827499379 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:9:7.827499379 DEBUG (0): NotifyReceiveQueue Size: 1
+0:9:7.827499379 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:9:7.827667225 DEBUG (3): -F- NotifyRadio is Free
+0:9:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:9:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:9:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:9:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:9:7.966430640 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:9:7.966430640 DEBUG (0): NotifyReceiveQueue Size: 1
+0:9:7.966430640 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:9:7.966598486 DEBUG (1): -F- NotifyRadio is Free
+0:9:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:9:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:9:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:9:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:9:8.076217614 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:9:8.076217614 DEBUG (0): NotifyReceiveQueue Size: 1
+0:9:8.076217614 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:9:8.076385460 DEBUG (4): -F- NotifyRadio is Free
+0:9:11.000000010 DEBUG (0): 
+_________EPOCH___9_______count=9,sum=235,avg=26,max=39_______
+
+0:10:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:10:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:10:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:10:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:10:2.326660162 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:10:2.326660162 DEBUG (7): NotifyReceiveQueue Size: 1
+0:10:2.326660162 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:10:2.326828008 DEBUG (6): -F- NotifyRadio is Free
+0:10:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:10:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:10:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:10:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:10:4.124099734 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:10:4.124099734 DEBUG (5): NotifyReceiveQueue Size: 1
+0:10:4.124099734 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:10:4.124267580 DEBUG (7): -F- NotifyRadio is Free
+0:10:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:10:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:10:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:10:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:10:4.369064329 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:10:4.369064329 DEBUG (5): NotifyReceiveQueue Size: 1
+0:10:4.369064329 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:10:4.369232175 DEBUG (8): -F- NotifyRadio is Free
+0:10:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:10:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:10:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:10:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:10:6.133895830 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:10:6.133895830 DEBUG (1): NotifyReceiveQueue Size: 1
+0:10:6.133895830 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:10:6.134063676 DEBUG (2): -F- NotifyRadio is Free
+0:10:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:10:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:10:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:10:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:10:6.233627321 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:10:6.233627321 DEBUG (1): NotifyReceiveQueue Size: 1
+0:10:6.233627321 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:10:6.233795167 DEBUG (5): -F- NotifyRadio is Free
+0:10:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:10:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:10:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:10:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:10:7.825317385 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:10:7.825317385 DEBUG (0): NotifyReceiveQueue Size: 1
+0:10:7.825317385 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:10:7.825485231 DEBUG (3): -F- NotifyRadio is Free
+0:10:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:10:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:10:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:10:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:10:7.966445899 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:10:7.966445899 DEBUG (0): NotifyReceiveQueue Size: 1
+0:10:7.966445899 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:10:7.966613745 DEBUG (1): -F- NotifyRadio is Free
+0:10:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:10:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:10:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:10:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:10:8.070083617 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:10:8.070083617 DEBUG (0): NotifyReceiveQueue Size: 1
+0:10:8.070083617 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:10:8.070251462 DEBUG (4): -F- NotifyRadio is Free
+0:10:11.000000010 DEBUG (0): 
+_________EPOCH___10_______count=9,sum=145,avg=16,max=43_______
+
+0:11:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:11:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:11:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:11:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:11:2.332885712 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:11:2.332885712 DEBUG (7): NotifyReceiveQueue Size: 1
+0:11:2.332885712 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:11:2.333053557 DEBUG (6): -F- NotifyRadio is Free
+0:11:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:11:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:11:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:11:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:11:4.128417946 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:11:4.128417946 DEBUG (5): NotifyReceiveQueue Size: 1
+0:11:4.128417946 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:11:4.128585792 DEBUG (7): -F- NotifyRadio is Free
+0:11:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:11:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:11:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:11:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:11:4.371704084 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:11:4.371704084 DEBUG (5): NotifyReceiveQueue Size: 1
+0:11:4.371704084 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:11:4.371871930 DEBUG (8): -F- NotifyRadio is Free
+0:11:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:11:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:11:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:11:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:11:6.129623394 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:11:6.129623394 DEBUG (1): NotifyReceiveQueue Size: 1
+0:11:6.129623394 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:11:6.129791240 DEBUG (2): -F- NotifyRadio is Free
+0:11:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:11:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:11:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:11:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:11:6.232940679 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:11:6.232940679 DEBUG (1): NotifyReceiveQueue Size: 1
+0:11:6.232940679 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:11:6.233108525 DEBUG (5): -F- NotifyRadio is Free
+0:11:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:11:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:11:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:11:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:11:7.826141355 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:11:7.826141355 DEBUG (0): NotifyReceiveQueue Size: 1
+0:11:7.826141355 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:11:7.826309200 DEBUG (3): -F- NotifyRadio is Free
+0:11:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:11:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:11:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:11:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:11:7.967315645 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:11:7.967315645 DEBUG (0): NotifyReceiveQueue Size: 1
+0:11:7.967315645 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:11:7.967483491 DEBUG (1): -F- NotifyRadio is Free
+0:11:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:11:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:11:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:11:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:11:8.073608376 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:11:8.073608376 DEBUG (0): NotifyReceiveQueue Size: 1
+0:11:8.073608376 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:11:8.073776222 DEBUG (4): -F- NotifyRadio is Free
+0:11:11.000000010 DEBUG (0): 
+_________EPOCH___11_______count=9,sum=177,avg=19,max=45_______
+
+0:12:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:12:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:12:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:12:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:12:2.334426840 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:12:2.334426840 DEBUG (7): NotifyReceiveQueue Size: 1
+0:12:2.334426840 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:12:2.334594686 DEBUG (6): -F- NotifyRadio is Free
+0:12:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:12:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:12:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:12:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:12:4.126525867 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:12:4.126525867 DEBUG (5): NotifyReceiveQueue Size: 1
+0:12:4.126525867 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:12:4.126693713 DEBUG (7): -F- NotifyRadio is Free
+0:12:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:12:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:12:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:12:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:12:4.369613642 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:12:4.369613642 DEBUG (5): NotifyReceiveQueue Size: 1
+0:12:4.369613642 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:12:4.369781488 DEBUG (8): -F- NotifyRadio is Free
+0:12:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:12:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:12:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:12:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:12:6.130233742 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:12:6.130233742 DEBUG (1): NotifyReceiveQueue Size: 1
+0:12:6.130233742 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:12:6.130401588 DEBUG (2): -F- NotifyRadio is Free
+0:12:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:12:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:12:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:12:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:12:6.241607621 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:12:6.241607621 DEBUG (1): NotifyReceiveQueue Size: 1
+0:12:6.241607621 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:12:6.241775467 DEBUG (5): -F- NotifyRadio is Free
+0:12:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:12:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:12:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:12:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:12:7.831130950 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:12:7.831130950 DEBUG (0): NotifyReceiveQueue Size: 1
+0:12:7.831130950 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:12:7.831298795 DEBUG (3): -F- NotifyRadio is Free
+0:12:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:12:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:12:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:12:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:12:7.965408307 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:12:7.965408307 DEBUG (0): NotifyReceiveQueue Size: 1
+0:12:7.965408307 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:12:7.965576153 DEBUG (1): -F- NotifyRadio is Free
+0:12:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:12:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:12:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:12:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:12:8.075836147 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:12:8.075836147 DEBUG (0): NotifyReceiveQueue Size: 1
+0:12:8.075836147 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:12:8.076003992 DEBUG (4): -F- NotifyRadio is Free
+0:12:11.000000010 DEBUG (0): 
+_________EPOCH___12_______count=9,sum=323,avg=35,max=47_______
+
+0:13:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:13:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:13:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:13:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:13:2.329391469 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:13:2.329391469 DEBUG (7): NotifyReceiveQueue Size: 1
+0:13:2.329391469 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:13:2.329559315 DEBUG (6): -F- NotifyRadio is Free
+0:13:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:13:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:13:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:13:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:13:4.126373280 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:13:4.126373280 DEBUG (5): NotifyReceiveQueue Size: 1
+0:13:4.126373280 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:13:4.126541126 DEBUG (7): -F- NotifyRadio is Free
+0:13:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:13:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:13:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:13:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:13:4.368682862 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:13:4.368682862 DEBUG (5): NotifyReceiveQueue Size: 1
+0:13:4.368682862 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:13:4.368850707 DEBUG (8): -F- NotifyRadio is Free
+0:13:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:13:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:13:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:13:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:13:6.133987383 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:13:6.133987383 DEBUG (1): NotifyReceiveQueue Size: 1
+0:13:6.133987383 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:13:6.134155228 DEBUG (2): -F- NotifyRadio is Free
+0:13:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:13:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:13:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:13:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:13:6.235488882 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:13:6.235488882 DEBUG (1): NotifyReceiveQueue Size: 1
+0:13:6.235488882 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:13:6.235656728 DEBUG (5): -F- NotifyRadio is Free
+0:13:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:13:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:13:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:13:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:13:7.828704816 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:13:7.828704816 DEBUG (0): NotifyReceiveQueue Size: 1
+0:13:7.828704816 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:13:7.828872662 DEBUG (3): -F- NotifyRadio is Free
+0:13:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:13:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:13:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:13:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:13:7.969284017 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:13:7.969284017 DEBUG (0): NotifyReceiveQueue Size: 1
+0:13:7.969284017 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:13:7.969451863 DEBUG (1): -F- NotifyRadio is Free
+0:13:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:13:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:13:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:13:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:13:8.075271575 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:13:8.075271575 DEBUG (0): NotifyReceiveQueue Size: 1
+0:13:8.075271575 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:13:8.075439420 DEBUG (4): -F- NotifyRadio is Free
+0:13:11.000000010 DEBUG (0): 
+_________EPOCH___13_______count=9,sum=105,avg=11,max=37_______
+
+0:14:2.324218760 DEBUG (6): -EpochTimer.fired- Node: 6, count: 1
+0:14:2.324218760 DEBUG (6): -NotifySendE- SendNotifyTask() posted.
+0:14:2.324218770 DEBUG (6): -NotifySendT- Send was successfull.
+0:14:2.324218770 DEBUG (6): -F- NotifyRadio is Busy
+0:14:2.328994743 DEBUG (7): -NotifyRecE- count: 1, Source: 6 
+0:14:2.328994743 DEBUG (7): NotifyReceiveQueue Size: 1
+0:14:2.328994743 DEBUG (7): -NotifyRecE- receiveNotifyTask() posted!
+0:14:2.329162589 DEBUG (6): -F- NotifyRadio is Free
+0:14:4.121093760 DEBUG (7): -EpochTimer.fired- Node: 7, count: 1
+0:14:4.121093760 DEBUG (7): -NotifySendE- SendNotifyTask() posted.
+0:14:4.121093770 DEBUG (7): -NotifySendT- Send was successfull.
+0:14:4.121093770 DEBUG (7): -F- NotifyRadio is Busy
+0:14:4.127716046 DEBUG (5): -NotifyRecE- count: 2, Source: 7 
+0:14:4.127716046 DEBUG (5): NotifyReceiveQueue Size: 1
+0:14:4.127716046 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:14:4.127883892 DEBUG (7): -F- NotifyRadio is Free
+0:14:4.365234385 DEBUG (8): -EpochTimer.fired- Node: 8, count: 1
+0:14:4.365234385 DEBUG (8): -NotifySendE- SendNotifyTask() posted.
+0:14:4.365234395 DEBUG (8): -NotifySendT- Send was successfull.
+0:14:4.365234395 DEBUG (8): -F- NotifyRadio is Busy
+0:14:4.372207621 DEBUG (5): -NotifyRecE- count: 1, Source: 8 
+0:14:4.372207621 DEBUG (5): NotifyReceiveQueue Size: 1
+0:14:4.372207621 DEBUG (5): -NotifyRecE- receiveNotifyTask() posted!
+0:14:4.372375467 DEBUG (8): -F- NotifyRadio is Free
+0:14:6.123046885 DEBUG (2): -EpochTimer.fired- Node: 2, count: 1
+0:14:6.123046885 DEBUG (2): -NotifySendE- SendNotifyTask() posted.
+0:14:6.123046895 DEBUG (2): -NotifySendT- Send was successfull.
+0:14:6.123046895 DEBUG (2): -F- NotifyRadio is Busy
+0:14:6.129333479 DEBUG (1): -NotifyRecE- count: 1, Source: 2 
+0:14:6.129333479 DEBUG (1): NotifyReceiveQueue Size: 1
+0:14:6.129333479 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:14:6.129501325 DEBUG (2): -F- NotifyRadio is Free
+0:14:6.230468760 DEBUG (5): -EpochTimer.fired- Node: 5, count: 1
+0:14:6.230468760 DEBUG (5): -NotifySendE- SendNotifyTask() posted.
+0:14:6.230468770 DEBUG (5): -NotifySendT- Send was successfull.
+0:14:6.230468770 DEBUG (5): -F- NotifyRadio is Busy
+0:14:6.237380961 DEBUG (1): -NotifyRecE- count: 4, Source: 5 
+0:14:6.237380961 DEBUG (1): NotifyReceiveQueue Size: 1
+0:14:6.237380961 DEBUG (1): -NotifyRecE- receiveNotifyTask() posted!
+0:14:6.237548807 DEBUG (5): -F- NotifyRadio is Free
+0:14:7.822265635 DEBUG (3): -EpochTimer.fired- Node: 3, count: 1
+0:14:7.822265635 DEBUG (3): -NotifySendE- SendNotifyTask() posted.
+0:14:7.822265645 DEBUG (3): -NotifySendT- Send was successfull.
+0:14:7.822265645 DEBUG (3): -F- NotifyRadio is Busy
+0:14:7.829437234 DEBUG (0): -NotifyRecE- count: 1, Source: 3 
+0:14:7.829437234 DEBUG (0): NotifyReceiveQueue Size: 1
+0:14:7.829437234 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:14:7.829605080 DEBUG (3): -F- NotifyRadio is Free
+0:14:7.958984385 DEBUG (1): -EpochTimer.fired- Node: 1, count: 1
+0:14:7.958984385 DEBUG (1): -NotifySendE- SendNotifyTask() posted.
+0:14:7.958984395 DEBUG (1): -NotifySendT- Send was successfull.
+0:14:7.958984395 DEBUG (1): -F- NotifyRadio is Busy
+0:14:7.963500970 DEBUG (0): -NotifyRecE- count: 6, Source: 1 
+0:14:7.963500970 DEBUG (0): NotifyReceiveQueue Size: 1
+0:14:7.963500970 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:14:7.963668816 DEBUG (1): -F- NotifyRadio is Free
+0:14:8.066406260 DEBUG (4): -EpochTimer.fired- Node: 4, count: 1
+0:14:8.066406260 DEBUG (4): -NotifySendE- SendNotifyTask() posted.
+0:14:8.066406270 DEBUG (4): -NotifySendT- Send was successfull.
+0:14:8.066406270 DEBUG (4): -F- NotifyRadio is Busy
+0:14:8.070495602 DEBUG (0): -NotifyRecE- count: 1, Source: 4 
+0:14:8.070495602 DEBUG (0): NotifyReceiveQueue Size: 1
+0:14:8.070495602 DEBUG (0): -NotifyRecE- receiveNotifyTask() posted!
+0:14:8.070663447 DEBUG (4): -F- NotifyRadio is Free
+0:14:11.000000010 DEBUG (0): 
+_________EPOCH___14_______count=9,sum=279,avg=31,max=39_______
+

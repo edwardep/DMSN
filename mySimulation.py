@@ -4,7 +4,7 @@ import sys ,os
 import random
 t=Tossim([])
 f=sys.stdout #open('./logfile.txt','w')
-SIM_END_TIME= 500 * t.ticksPerSecond()
+SIM_END_TIME= 900 * t.ticksPerSecond()
 print "TicksPerSecond : ", t.ticksPerSecond(),"\n"
 #t.addChannel("Boot",f)
 #t.addChannel("RoutingMsg",f)
@@ -13,7 +13,7 @@ print "TicksPerSecond : ", t.ticksPerSecond(),"\n"
 t.addChannel("SRTreeC",f)
 
 #_____________________
-total_nodes = 16
+total_nodes = 9
 #_____________________
 
 for i in range(0,total_nodes):
