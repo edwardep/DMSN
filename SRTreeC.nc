@@ -44,12 +44,16 @@ implementation
 	uint8_t parentID;
 
 	// local aggr values [32]
-	uint16_t children[3][MAX_NODES];
+	uint16_t children[4][MAX_NODES];
 
 	uint16_t sum_value;
 	uint8_t count_value;
 	uint8_t max_value;
 	uint8_t raw_data;
+
+	uint8_t aggr[2];
+	uint8_t num;
+	uint8_t msg_type;
 	
 	task void sendRoutingTask();
 	task void sendNotifyTask();
@@ -95,6 +99,59 @@ ___________________________________________________*/
 			curdepth=0;
 			parentID=0;
 			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d ,check_sum= %d\n", curdepth , parentID, count_value);
+
+
+			call Seed.init((call RandomTimer.getNow()));
+			if(!(num = (call Random.rand16())%1))
+			{
+				aggr[0] = (call Random.rand16())%5;
+				
+				if(aggr[0] == MIN)
+					msg_type = MIN2+TYPE_8;
+				else if(aggr[0] == MAX)
+					msg_type = MAX2+TYPE_8;
+				else if(aggr[0] == COUNT)
+					msg_type = COUNT2+TYPE_8;
+				else if(aggr[0] == SUM)
+					msg_type = SUM2+TYPE_16;
+				else
+					msg_type = SC2+TYPE_24;
+			}
+			else
+			{
+				aggr[0] = (call Random.rand16())%5;
+				aggr[1] = (call Random.rand16())%5;
+				
+				if(aggr[0] == SUM || aggr[1] == SUM)
+				{
+					if(aggr[0] == MIN || aggr[1] == MIN)
+						msg_type = MIN1+SUM2+TYPE_24;
+					else if(aggr[0] == MAX || aggr[1] == MAX)
+						msg_type = MAX1+SUM2+TYPE_24;
+					else
+						msg_type = SC2+TYPE_24;
+				}
+				else if(aggr[0] == AVG || aggr[1] == AVG || aggr[0] == VAR || aggr[1] == VAR)
+				{
+					if(aggr[0] == MIN || aggr[1] == MIN)
+						msg_type = MIN1+SC2+TYPE_32;
+					else if(aggr[0] == MAX || aggr[1] == MAX)
+						msg_type = MAX1+SC2+TYPE_32;
+					else
+						msg_type = SC2+TYPE_24;
+				}
+				else if(aggr[0] == COUNT || aggr[1] == COUNT)
+				{
+					if(aggr[0] == MIN || aggr[1] == MIN)
+						msg_type = MIN1+COUNT2+TYPE_2X8;
+					else
+						msg_type = MAX1+COUNT2+TYPE_2X8;
+				}
+				else
+					msg_type = MIN1+MAX2+TYPE_2X8;
+
+			}
+
 		}
 		else
 		{
