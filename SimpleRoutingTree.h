@@ -5,12 +5,12 @@
 #include <stdio.h>
 
 enum{
-	MIN = 0,
-	MAX = 1,
-	COUNT = 2,
-	SUM = 3,
+	MIN = 1,
+	MAX = 2,
+	COUNT = 3,
 	AVG = 4,
-	VAR = 5
+	SUM = 5,
+	VAR = 6
 };
 enum{
 	MIN1 = 100,
@@ -20,15 +20,17 @@ enum{
 	MIN2 = 10,
 	MAX2 = 20,
 	COUNT2 = 30,
-	SUM2 = 40,
-	SC2 = 50
+	SC2 = 40,
+	SUM2 = 50
 };
 enum{
 	TYPE_8 = 0,
 	TYPE_16 = 1,
 	TYPE_24 = 2,
 	TYPE_32 = 3,
-	TYPE_2X8 = 4
+	TYPE_2X8 = 4,
+	TYPE_56 = 5,
+	TYPE_64 = 6
 };
 
 enum{
@@ -46,7 +48,7 @@ enum{
 typedef nx_struct RoutingMsg
 {
 	nx_uint8_t depth;
-	//nx_uint8_t aggr;
+	nx_uint8_t aggr;
 } RoutingMsg;
 
 typedef nx_struct NotifyParentMsg
@@ -58,11 +60,11 @@ typedef nx_struct NotifyParentMsg
 
 typedef nx_struct Msg_8
 {
-	nx_uint8_t var;
+	nx_uint8_t var8;
 } Msg_8;
 typedef nx_struct Msg_16
 {
-	nx_uint16_t var;
+	nx_uint16_t var16;
 } Msg_16;
 typedef nx_struct Msg_24
 {
@@ -71,13 +73,26 @@ typedef nx_struct Msg_24
 } Msg_24;
 typedef nx_struct Msg_32
 {
-	nx_uint8_t var8_1;
+	nx_uint8_t var8;
 	nx_uint8_t var8_2;
 	nx_uint16_t var16;
 } Msg_32;
+typedef nx_struct Msg_56
+{
+	nx_uint8_t var8;
+	nx_uint16_t var16;
+	nx_uint32_t var32;
+} Msg_56;
+typedef nx_struct Msg_64
+{
+	nx_uint8_t var8;
+	nx_uint8_t var8_2;
+	nx_uint16_t var16;
+	nx_uint32_t var32;
+} Msg_64;
 typedef nx_struct Msg_2x8
 {
-	nx_uint8_t var8_1;
+	nx_uint8_t var8;
 	nx_uint8_t var8_2;
 } Msg_2x8;
 

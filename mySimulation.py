@@ -4,12 +4,13 @@ import sys ,os
 import random
 t=Tossim([])
 f=sys.stdout #open('./logfile.txt','w')
-SIM_END_TIME= 900 * t.ticksPerSecond()
+SIM_END_TIME= 300 * t.ticksPerSecond()
 print "TicksPerSecond : ", t.ticksPerSecond(),"\n"
 #t.addChannel("Boot",f)
 #t.addChannel("RoutingMsg",f)
 #t.addChannel("NotifyMsg",f)
 #t.addChannel("Radio",f)
+t.addChannel("AggrFunc",f)
 t.addChannel("SRTreeC",f)
 
 #_____________________

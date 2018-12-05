@@ -44,16 +44,14 @@ implementation
 	uint8_t parentID;
 
 	// local aggr values [32]
-	uint16_t children[4][MAX_NODES];
+	uint32_t children[5][MAX_NODES];
+	uint32_t values[5];
 
-	uint16_t sum_value;
-	uint8_t count_value;
-	uint8_t max_value;
-	uint8_t raw_data;
-
-	uint8_t aggr[2];
+	uint8_t aggr1;
+	uint8_t aggr2;
 	uint8_t num;
 	uint8_t msg_type;
+	uint8_t raw_data;
 	
 	task void sendRoutingTask();
 	task void sendNotifyTask();
@@ -98,70 +96,14 @@ ___________________________________________________*/
 		{
 			curdepth=0;
 			parentID=0;
-			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d ,check_sum= %d\n", curdepth , parentID, count_value);
-
-
-			call Seed.init((call RandomTimer.getNow()));
-			if(!(num = (call Random.rand16())%1))
-			{
-				aggr[0] = (call Random.rand16())%5;
-				
-				if(aggr[0] == MIN)
-					msg_type = MIN2+TYPE_8;
-				else if(aggr[0] == MAX)
-					msg_type = MAX2+TYPE_8;
-				else if(aggr[0] == COUNT)
-					msg_type = COUNT2+TYPE_8;
-				else if(aggr[0] == SUM)
-					msg_type = SUM2+TYPE_16;
-				else
-					msg_type = SC2+TYPE_24;
-			}
-			else
-			{
-				aggr[0] = (call Random.rand16())%5;
-				aggr[1] = (call Random.rand16())%5;
-				
-				if(aggr[0] == SUM || aggr[1] == SUM)
-				{
-					if(aggr[0] == MIN || aggr[1] == MIN)
-						msg_type = MIN1+SUM2+TYPE_24;
-					else if(aggr[0] == MAX || aggr[1] == MAX)
-						msg_type = MAX1+SUM2+TYPE_24;
-					else
-						msg_type = SC2+TYPE_24;
-				}
-				else if(aggr[0] == AVG || aggr[1] == AVG || aggr[0] == VAR || aggr[1] == VAR)
-				{
-					if(aggr[0] == MIN || aggr[1] == MIN)
-						msg_type = MIN1+SC2+TYPE_32;
-					else if(aggr[0] == MAX || aggr[1] == MAX)
-						msg_type = MAX1+SC2+TYPE_32;
-					else
-						msg_type = SC2+TYPE_24;
-				}
-				else if(aggr[0] == COUNT || aggr[1] == COUNT)
-				{
-					if(aggr[0] == MIN || aggr[1] == MIN)
-						msg_type = MIN1+COUNT2+TYPE_2X8;
-					else
-						msg_type = MAX1+COUNT2+TYPE_2X8;
-				}
-				else
-					msg_type = MIN1+MAX2+TYPE_2X8;
-
-			}
-
+			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d \n", curdepth , parentID);
 		}
 		else
 		{
 			curdepth=-1;
 			parentID=-1;
-			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d ,check_sum= %d\n", curdepth , parentID, count_value);
-		}
-	 	sum_value=0;
-		count_value=1;
-		max_value=0;
+			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d \n", curdepth , parentID);
+		}	
 	}
 /**
 	@RADIO.START(DONE)
@@ -202,60 +144,141 @@ ___________________________________________________*/
 **/	
 	event void EpochTimer.fired()
 	{
-		
-		NotifyParentMsg* m;
 		message_t tmp;
 		uint8_t iter = 0;
-		uint16_t data_avg = 0;
-		
+		uint8_t data_avg = 0;
+		uint8_t data_var = 0;
+		uint8_t var8_full;
+		uint8_t packet_t,msg_size;
+		uint8_t temp;
+
 		// Sense Data and store to local array
 		// raw_data = random(1-50)
 		call Seed.init((call RandomTimer.getNow())+TOS_NODE_ID);
 		raw_data=(call Random.rand16())%50;
 		
-		sum_value=raw_data;
-		count_value=1;
-		max_value=raw_data;
+		temp = raw_data;
+		values[0]=raw_data;
+		values[1]=raw_data;
+		values[2]=1;
+		values[3]=raw_data;
+		values[4]=raw_data*raw_data;
+
 
 		// Aggregate subtree values
 		// if RootNode  -> Print_Data 
 		// else 		-> Forward Data to Parent
 		if(TOS_NODE_ID==0)
 		{
-			for(iter=0;iter<MAX_NODES;iter++)
-			{
-				count_value += children[COUNT][iter];
-				sum_value+= children[SUM][iter];
-				if(max_value<children[MAX][iter]) 
-					max_value = children[MAX][iter];
 
+			if(aggr1 == MIN || aggr2 == MIN)
+			{
+				for(iter=0;iter<MAX_NODES;iter++)
+					if(values[0] > children[0][iter]) 
+						values[0] = children[0][iter];
 			}
-			data_avg= sum_value/count_value;
+			if(aggr1 == MAX || aggr2 == MAX)
+			{
+				for(iter=0;iter<MAX_NODES;iter++)
+					if(values[1] < children[1][iter]) 
+						values[1] = children[1][iter];
+			}
+			if(aggr1 == COUNT || aggr2 == COUNT)
+			{
+				for(iter=0;iter<MAX_NODES;iter++)
+					values[2] += children[2][iter];
+			}	
+			if(aggr1 == SUM || aggr2 == SUM)
+			{
+				for(iter=0;iter<MAX_NODES;iter++)
+					values[3] += children[3][iter];
+			}	
+			if(aggr1 == AVG || aggr2 == AVG)
+			{
+				data_avg = values[3]/values[3];
+			}
+			if(aggr1 == VAR || aggr2 == VAR)
+			{
+				data_var = values[4]/values[2] - data_avg*data_avg;
+			}
 			
 			roundCounter += 1;
-			 dbg("SRTreeC", "\n_________EPOCH___%u_______count=%d,sum=%d,avg=%d,max=%d_______\n\n", 
-			 	roundCounter,count_value,sum_value,data_avg,max_value);
+			 //dbg("SRTreeC", "\n_________EPOCH___%u_______count=%d,sum=%d,avg=%d,max=%d_______\n\n", 
+			 //	roundCounter,values[2],lue,data_avg,max_value);
+
 
 		}
 		else
 		{
-			m = (NotifyParentMsg *) (call NotifyPacket.getPayload(&tmp, sizeof(NotifyParentMsg)));
-			m->count_value=count_value;
-			m->sum_value=sum_value;
-
-			for(iter=0;iter<MAX_NODES;iter++)
+			aggr2 = msg_type/100;
+			aggr1 = (msg_type%100)/10;
+			packet_t = msg_type%10;
+			var8_full = 0;
+			switch(packet_t) 
 			{
-				m->count_value += children[COUNT][iter];
-				m->sum_value+= children[SUM][iter];
-				if(max_value<children[MAX][iter]) 
-					max_value = children[MAX][iter];
+				case TYPE_8: 	Msg_8* m = (Msg_8*) (call NotifyPacket.getPayload(&tmp, sizeof(Msg_8))); 
+								msg_size = sizeof(Msg_8);	break;
+				case TYPE_16: 	Msg_16* m = (Msg_16*) (call NotifyPacket.getPayload(&tmp, sizeof(Msg_16))); 
+								msg_size = sizeof(Msg_16);	break;
+				case TYPE_24: 	Msg_24* m = (Msg_24*) (call NotifyPacket.getPayload(&tmp, sizeof(Msg_24))); 
+								msg_size = sizeof(Msg_24);	break;
+				case TYPE_32: 	Msg_32* m = (Msg_32*) (call NotifyPacket.getPayload(&tmp, sizeof(Msg_32)));	 
+								msg_size = sizeof(Msg_32);  break;
+				case TYPE_56: 	Msg_56* m = (Msg_56*) (call NotifyPacket.getPayload(&tmp, sizeof(Msg_56)));	 
+								msg_size = sizeof(Msg_32);  break;
+				case TYPE_64: 	Msg_64* m = (Msg_64*) (call NotifyPacket.getPayload(&tmp, sizeof(Msg_64)));	 
+								msg_size = sizeof(Msg_32);  break;
+				case TYPE_2X8: 	Msg_2x8* m = (Msg_2x8*) (call NotifyPacket.getPayload(&tmp, sizeof(Msg_2x8))); 
+								msg_size = sizeof(Msg_2x8); break;
 			}
-			m->max_value = max_value;
+
+			if(aggr1 == MIN || aggr2 == MIN)	//MIN
+			{
+				for(iter=0;iter<MAX_NODES;iter++)
+					if(temp > children[0][iter]) 
+						temp = children[0][iter];
+				m->var8=temp; var8_full = 1;	
+			}
+			if(aggr1 == MAX || aggr2 == MAX)	//MAX
+			{
+				temp = raw_data;
+				for(iter=0;iter<MAX_NODES;iter++)
+					if(temp < children[1][iter]) 
+						temp = children[1][iter];
+				if(var8_full)
+					m->var8_2=temp;
+				else
+					m->var8 = temp; var8_full = 1;
+			}
+			if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG)	//COUNT
+			{
+				temp = 1;
+				for(iter=0;iter<MAX_NODES;iter++)
+					temp += children[2][iter];
+				if(var8_full)
+					m->var8_2=temp;
+				else 
+					m->var8 = temp; var8_full = 1;
+			}
+			if(aggr1 == SUM || aggr2 == SUM || aggr1 == AVG || aggr2 == AVG)	//SUM
+			{	
+				temp = raw_data;
+				for(iter=0;iter<MAX_NODES;iter++)
+					temp += children[3][iter];
+				m->var16=temp;
+			}
+			if(pakcet_t == TYPE_56 || packet_t == TYPE_64)		//SUM2
+			{	
+				temp = raw_data*raw_data;
+				for(iter=0;iter<MAX_NODES;iter++)
+					temp += children[4][iter]*children[4][iter];
+				m->var32=temp;
+			}
 			
 			dbg("NotifyMsg" , "-EpochTimer.fired- Node: %d, count: %d\n", TOS_NODE_ID,count_value);
 
 			call NotifyAMPacket.setDestination(&tmp, parentID);
-			call NotifyPacket.setPayloadLength(&tmp,sizeof(NotifyParentMsg));
+			call NotifyPacket.setPayloadLength(&tmp,sizeof(msg_size));
 					
 			if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
 			{
@@ -275,9 +298,11 @@ ___________________________________________________*/
 	{
 		message_t tmp;
 		error_t enqueueDone;
-		
+		uint8_t num;
 		RoutingMsg* mrpkt;
 		
+		num = 256;
+		dbg("AggrFunc","num=%d\n\n",num);
 		dbg("RoutingMsg", "-TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is %s \n",(RoutingSendBusy)?"Busy":"Free");
 		
 		if(call RoutingSendQueue.full())
@@ -293,7 +318,82 @@ ___________________________________________________*/
 			return;
 		}
 
-		atomic{mrpkt->depth = curdepth;}
+		/*NODE 0 - setup aggr func parameters*/
+		if(TOS_NODE_ID == 0)
+		{	
+			num = 2;
+			aggr1 = MIN;
+			aggr2 = VAR;
+			//call Seed.init((call RandomTimer.getNow()));
+			if(!num)
+			{
+				//aggr1 = (call Random.rand16())%5;
+				aggr2 = 0;
+				if(aggr1 == MIN)
+					msg_type = MIN2+TYPE_8;
+				else if(aggr1 == MAX)
+					msg_type = MAX2+TYPE_8;
+				else if(aggr1 == COUNT)
+					msg_type = COUNT2+TYPE_8;
+				else if(aggr1 == SUM)
+					msg_type = SUM2+TYPE_16;
+				else if(aggr1 == AVG)
+					msg_type = SC2+TYPE_24;
+				else
+					msg_type = SC2+TYPE_56;
+			}
+			else
+			{
+				//aggr1 = (call Random.rand16())%5;
+				//aggr2 = (call Random.rand16())%5;
+				
+				if(aggr1 == SUM || aggr2 == SUM)
+				{
+					if(aggr1 == MIN || aggr2 == MIN)
+						msg_type = MIN1+SUM2+TYPE_24;
+					else if(aggr1 == MAX || aggr2 == MAX)
+						msg_type = MAX1+SUM2+TYPE_24;
+					else if(aggr1 == VAR || aggr2 == VAR)
+						msg_type = SC2+TYPE_56;
+					else 
+						msg_type = SC2+TYPE_24;
+				}
+				else if(aggr1 == AVG || aggr2 == AVG)
+				{
+					if(aggr1 == MIN || aggr2 == MIN)
+						msg_type = MIN1+SC2+TYPE_32;
+					else if(aggr1 == MAX || aggr2 == MAX)
+						msg_type = MAX1+SC2+TYPE_32;
+					else if(aggr1 == VAR || aggr2 == VAR)
+						msg_type = SC2+TYPE_56;
+					else
+						msg_type = SC2+TYPE_24;
+				}
+				else if(aggr1 == VAR || aggr2 == VAR)
+				{
+					if(aggr1 == MIN || aggr2 == MIN)
+						msg_type = MIN1+SC2+TYPE_64;
+					else if(aggr1 == MAX || aggr2 == MAX)
+						msg_type = MAX1+SC2+TYPE_64;
+					else
+						msg_type = SC2+TYPE_56;
+				}
+				else if(aggr1 == COUNT || aggr2 == COUNT)
+				{
+					if(aggr1 == MIN || aggr2 == MIN)
+						msg_type = MIN1+COUNT2+TYPE_2X8;
+					else
+						msg_type = MAX1+COUNT2+TYPE_2X8;
+				}
+				else
+					msg_type = MIN1+MAX2+TYPE_2X8;
+			}
+		}
+		atomic
+		{
+			mrpkt->depth = curdepth;
+			mrpkt->aggr = msg_type;
+		}
 
 		call RoutingAMPacket.setDestination(&tmp, AM_BROADCAST_ADDR);
 		call RoutingPacket.setPayloadLength(&tmp, sizeof(RoutingMsg));
@@ -477,6 +577,7 @@ ___________________________________________________*/
 			// set Parent and Depth
 			parentID= call RoutingAMPacket.source(&radioRoutingRecPkt);
 			curdepth= mpkt->depth + 1;
+			msg_type= mpkt->aggr;
 
 			// generate random number for conflict avoidance
 			call Seed.init((call RandomTimer.getNow())+TOS_NODE_ID);
@@ -553,21 +654,21 @@ ___________________________________________________*/
 
 		radioNotifyRecPkt= call NotifyReceiveQueue.dequeue();
 
-		len= call NotifyPacket.payloadLength(&radioNotifyRecPkt);
+		// len= call NotifyPacket.payloadLength(&radioNotifyRecPkt);
 		
-		if(len == sizeof(NotifyParentMsg))
-		{		
-			NotifyParentMsg* mr = (NotifyParentMsg*) (call NotifyPacket.getPayload(&radioNotifyRecPkt,len));
+		// if(len == sizeof(NotifyParentMsg))
+		// {		
+		// 	NotifyParentMsg* mr = (NotifyParentMsg*) (call NotifyPacket.getPayload(&radioNotifyRecPkt,len));
 			
-			childID = call NotifyAMPacket.source(&radioNotifyRecPkt);
-			children[COUNT][childID] = mr->count_value;
-			children[SUM][childID] = mr->sum_value;
-			children[MAX][childID] = mr->max_value; 
-		}
-		else
-		{
-			dbg("NotifyMsg","-NotifyRecT- Not a NotifyMsg.\n");
-			return;
-		}
+		// 	childID = call NotifyAMPacket.source(&radioNotifyRecPkt);
+		// 	children[COUNT][childID] = mr->count_value;
+		// 	children[SUM][childID] = mr->sum_value;
+		// 	children[MAX][childID] = mr->max_value; 
+		// }
+		// else
+		// {
+		// 	dbg("NotifyMsg","-NotifyRecT- Not a NotifyMsg.\n");
+		// 	return;
+		// }
 	}
 }
