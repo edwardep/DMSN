@@ -24,13 +24,12 @@ enum{
 	SUM2 = 50
 };
 enum{
-	TYPE_8 = 0,
-	TYPE_16 = 1,
-	TYPE_24 = 2,
-	TYPE_32 = 3,
-	TYPE_2X8 = 4,
-	TYPE_56 = 5,
-	TYPE_64 = 6
+	TYPE_8 = 1,
+	TYPE_16 = 2,
+	TYPE_24 = 3,
+	TYPE_32 = 4,
+	TYPE_56 = 7,
+	TYPE_64 = 8
 };
 
 enum{
@@ -51,38 +50,38 @@ typedef nx_struct RoutingMsg
 	nx_uint8_t aggr;
 } RoutingMsg;
 
-typedef nx_struct NotifyParentMsg
-{
-	nx_uint16_t sum_value;
-	nx_uint8_t count_value;
-	nx_uint8_t max_value;
-} NotifyParentMsg;
+// typedef nx_struct NotifyParentMsg
+// {
+// 	nx_uint16_t sum_value;
+// 	nx_uint8_t count_value;
+// 	nx_uint8_t max_value;
+// } NotifyParentMsg;
 
-typedef nx_struct Msg_8
-{
-	nx_uint8_t var8;
-} Msg_8;
-typedef nx_struct Msg_16
-{
-	nx_uint16_t var16;
-} Msg_16;
-typedef nx_struct Msg_24
-{
-	nx_uint8_t var8;
-	nx_uint16_t var16;
-} Msg_24;
-typedef nx_struct Msg_32
-{
-	nx_uint8_t var8;
-	nx_uint8_t var8_2;
-	nx_uint16_t var16;
-} Msg_32;
-typedef nx_struct Msg_56
-{
-	nx_uint8_t var8;
-	nx_uint16_t var16;
-	nx_uint32_t var32;
-} Msg_56;
+// typedef nx_struct Msg_8
+// {
+// 	nx_uint8_t var8;
+// } Msg_8;
+// typedef nx_struct Msg_16
+// {
+// 	nx_uint16_t var16;
+// } Msg_16;
+// typedef nx_struct Msg_24
+// {
+// 	nx_uint8_t var8;
+// 	nx_uint16_t var16;
+// } Msg_24;
+// typedef nx_struct Msg_32
+// {
+// 	nx_uint8_t var8;
+// 	nx_uint8_t var8_2;
+// 	nx_uint16_t var16;
+// } Msg_32;
+// typedef nx_struct Msg_56
+// {
+// 	nx_uint8_t var8;
+// 	nx_uint16_t var16;
+// 	nx_uint32_t var32;
+// } Msg_56;
 typedef nx_struct Msg_64
 {
 	nx_uint8_t var8;
@@ -90,10 +89,10 @@ typedef nx_struct Msg_64
 	nx_uint16_t var16;
 	nx_uint32_t var32;
 } Msg_64;
-typedef nx_struct Msg_2x8
-{
-	nx_uint8_t var8;
-	nx_uint8_t var8_2;
-} Msg_2x8;
+// typedef nx_struct Msg_2x8
+// {
+// 	nx_uint8_t var8;
+// 	nx_uint8_t var8_2;
+// } Msg_2x8;
 
 #endif
