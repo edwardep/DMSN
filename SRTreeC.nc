@@ -50,7 +50,6 @@ implementation
 	uint8_t aggr1;
 	uint8_t aggr2;
 	uint8_t packet_t;
-	uint8_t num;
 	uint8_t msg_type;
 	uint8_t raw_data;
 	
@@ -105,7 +104,8 @@ ___________________________________________________*/
 			curdepth=-1;
 			parentID=-1;
 			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d \n", curdepth , parentID);
-		}	
+		}
+		// MIN_ARRAY must be initialized with 255 insted of 0s
 		for(i=0;i<MAX_NODES;i++)
 			children[0][i] = -1;
 	}
@@ -153,8 +153,6 @@ ___________________________________________________*/
 		uint8_t data_avg = 0;
 		uint8_t data_var = 0;
 		uint8_t var8_full;
-		uint8_t msg_size;
-		uint8_t temp;
 
 		Msg_64* m;
 
@@ -163,58 +161,63 @@ ___________________________________________________*/
 		call Seed.init((call RandomTimer.getNow())+TOS_NODE_ID);
 		raw_data=(call Random.rand16())%50;
 		
-		temp = raw_data;
 		values[0]=raw_data;
 		values[1]=raw_data;
 		values[2]=1;
 		values[3]=raw_data;
 		values[4]=raw_data*raw_data;
 
-
+		//dbg("SRTreeC","raw_data:%d\n",raw_data);
 		// Aggregate subtree values
 		// if RootNode  -> Print_Data 
 		// else 		-> Forward Data to Parent
 		if(TOS_NODE_ID==0)
 		{
 
+			dbg("SRTreeC", "\n_________________EPOCH___%u______________\n",roundCounter);
+
 			if(aggr1 == MIN || aggr2 == MIN)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
 					if(values[0] > children[0][iter]) 
 						values[0] = children[0][iter];
+				dbg("SRTreeC", "MIN: %d\n",values[0]); 
 			}
 			if(aggr1 == MAX || aggr2 == MAX)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
 					if(values[1] < children[1][iter]) 
 						values[1] = children[1][iter];
+				dbg("SRTreeC", "MAX: %d\n",values[1]); 
 			}
 			if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
 					values[2] += children[2][iter];
+				if(aggr1 == COUNT || aggr2 == COUNT)
+					dbg("SRTreeC", "COUNT: %d\n",values[2]); 
 			}	
 			if(aggr1 == SUM || aggr2 == SUM || aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
 					values[3] += children[3][iter];
+				if(aggr1 == SUM || aggr2 == SUM)
+					dbg("SRTreeC", "SUM: %d\n",values[3]);
 			}	
 			if(aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)
 			{
 				data_avg = values[3]/values[2];
+				dbg("SRTreeC", "AVG: %d\n",data_avg); 
 			}
 			if(aggr1 == VAR || aggr2 == VAR)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
 					values[4] += children[4][iter];
 				data_var = (values[4]/values[2])-(data_avg*data_avg);
+				dbg("SRTreeC", "VAR: %d\n",data_var); 
 			}
 			
 			roundCounter += 1;
-			dbg("SRTreeC", "\n_________EPOCH___%u_______count=%d,sum=%d,max=%d,min=%d,avg=%d,var=%d_______\n\n", 
-			 	roundCounter,values[2],values[3],values[1],values[0],data_avg,data_var);
-
-
 		}
 		else
 		{
@@ -223,17 +226,19 @@ ___________________________________________________*/
 			packet_t = msg_type%10;
 			var8_full = 0;
 
+			dbg("AggrFunc","aggr1=%d,aggr2=%d,packet_t=%d\n",aggr1,aggr2,packet_t);
+
 			m = (Msg_64*) (call NotifyPacket.getPayload(&tmp, sizeof(Msg_64))); 
 
 
-			if(aggr1 == MIN || aggr2 == MIN)	//MIN
+			if(aggr1 == MIN || aggr2 == MIN)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
 					if(values[0] > children[0][iter]) 
 						values[0] = children[0][iter];
 				m->var8=values[0]; var8_full = 1;	
 			}
-			if(aggr1 == MAX || aggr2 == MAX)	//MAX
+			if(aggr1 == MAX || aggr2 == MAX)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
 					if(values[1] < children[1][iter]) 
@@ -243,7 +248,7 @@ ___________________________________________________*/
 				else
 					m->var8 = values[1]; var8_full = 1;
 			}
-			if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG ) 	//COUNT
+			if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG ) 
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
 					values[2] += children[2][iter];
@@ -251,23 +256,23 @@ ___________________________________________________*/
 					m->var8_2=values[2];
 				else 
 					m->var8 = values[2]; var8_full = 1;
+
 			}
-			if(aggr1 == SUM || aggr2 == SUM || aggr1 == AVG || aggr2 == AVG)	//SUM
+			if(aggr1 == SUM || aggr2 == SUM || aggr1 == AVG || aggr2 == AVG)
 			{	
 				for(iter=0;iter<MAX_NODES;iter++)
 					values[3] += children[3][iter];
 				m->var16=values[3];
 			}
-			if(packet_t == TYPE_56 || packet_t == TYPE_64)		//SUM2
+			if(packet_t == TYPE_56 || packet_t == TYPE_64)
 			{	
 				for(iter=0;iter<MAX_NODES;iter++)
-					values[4] += (children[4][iter]*children[4][iter]);
+					values[4] += children[4][iter];
 				m->var32=values[4];
 			}
 			
 			dbg("NotifyMsg" , "-EpochTimer.fired- Node: %d\n", TOS_NODE_ID);
 
-			dbg("AggrFunc","In ET.fired: raw_data:%d\n",raw_data);
 			dbg("AggrFunc","In ET.fired: var8:%d,var8_2:%d,var16:%d,var32:%d\n",m->var8,m->var8_2,m->var16,m->var32);
 
 			call NotifyAMPacket.setDestination(&tmp, parentID);
@@ -312,9 +317,9 @@ ___________________________________________________*/
 		/*NODE 0 - setup aggr func parameters*/
 		if(TOS_NODE_ID == 0)
 		{	
-			num = 0;
-			aggr1 = VAR;
-			aggr2 = VAR;
+			num = 2;
+			aggr1 = AVG;
+			aggr2 = SUM;
 			//call Seed.init((call RandomTimer.getNow()));
 			if(!num)
 			{
@@ -569,7 +574,7 @@ ___________________________________________________*/
 			parentID= call RoutingAMPacket.source(&radioRoutingRecPkt);
 			curdepth= mpkt->depth + 1;
 			msg_type= mpkt->aggr;
-			dbg("SRTreeC","msg_type:%d\n",msg_type);
+			dbg("AggrFunc","msg_type:%d\n",msg_type);
 			// generate random number for conflict avoidance
 			call Seed.init((call RandomTimer.getNow())+TOS_NODE_ID);
 			random_interval = ((call Random.rand16())%MAX_NODES)*10;
@@ -644,12 +649,13 @@ ___________________________________________________*/
 		Msg_64* mr;
 		uint8_t var8_full = 0;
 		uint8_t childID;
+		uint8_t iter;
 
 		radioNotifyRecPkt= call NotifyReceiveQueue.dequeue();
 
 		len= call NotifyPacket.payloadLength(&radioNotifyRecPkt);
 		
-		dbg("SRTreeC","NotifyReceive..length=%d bits\n",len*8);
+		//dbg("SRTreeC","NotifyReceive..length=%d bits\n",len*8);
 		
 
 			
@@ -670,20 +676,23 @@ ___________________________________________________*/
 			else
 				children[1][childID] = mr->var8; var8_full = 1;
 		}
-		if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG)	//COUNT
+		if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)	//COUNT
 		{
 			if(var8_full)
 				children[2][childID] = mr->var8_2;
 			else
 				children[2][childID] = mr->var8; var8_full = 1;
 		}
-		if(aggr1 == SUM || aggr2 == SUM || aggr1 == AVG || aggr2 == AVG)	//SUM
+		if(aggr1 == SUM || aggr2 == SUM || aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)	//SUM
 		{	
 			children[3][childID] = mr->var16; 
 		}
-		if(packet_t == TYPE_56 || packet_t == TYPE_64)		//SUM2
+		if(packet_t == TYPE_56 || packet_t == TYPE_64 || aggr1 == VAR || aggr2 == VAR)		//SUM2
 		{	
 			children[4][childID] = mr->var32;
 		}
+
+		for(iter=0;iter<10;iter++)
+			dbg("AggrFunc","children[%d]=%d\n",iter,children[4][iter]);
 	}
 }

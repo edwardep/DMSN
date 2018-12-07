@@ -50,38 +50,6 @@ typedef nx_struct RoutingMsg
 	nx_uint8_t aggr;
 } RoutingMsg;
 
-// typedef nx_struct NotifyParentMsg
-// {
-// 	nx_uint16_t sum_value;
-// 	nx_uint8_t count_value;
-// 	nx_uint8_t max_value;
-// } NotifyParentMsg;
-
-// typedef nx_struct Msg_8
-// {
-// 	nx_uint8_t var8;
-// } Msg_8;
-// typedef nx_struct Msg_16
-// {
-// 	nx_uint16_t var16;
-// } Msg_16;
-// typedef nx_struct Msg_24
-// {
-// 	nx_uint8_t var8;
-// 	nx_uint16_t var16;
-// } Msg_24;
-// typedef nx_struct Msg_32
-// {
-// 	nx_uint8_t var8;
-// 	nx_uint8_t var8_2;
-// 	nx_uint16_t var16;
-// } Msg_32;
-// typedef nx_struct Msg_56
-// {
-// 	nx_uint8_t var8;
-// 	nx_uint16_t var16;
-// 	nx_uint32_t var32;
-// } Msg_56;
 typedef nx_struct Msg_64
 {
 	nx_uint8_t var8;
@@ -89,10 +57,5 @@ typedef nx_struct Msg_64
 	nx_uint16_t var16;
 	nx_uint32_t var32;
 } Msg_64;
-// typedef nx_struct Msg_2x8
-// {
-// 	nx_uint8_t var8;
-// 	nx_uint8_t var8_2;
-// } Msg_2x8;
 
 #endif
