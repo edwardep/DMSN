@@ -29,7 +29,9 @@ enum{
 	TYPE_24 = 3,
 	TYPE_32 = 4,
 	TYPE_56 = 7,
-	TYPE_64 = 8
+	TYPE_64 = 8,
+	TINA_8 = 5,
+	TINA_16 = 6
 };
 
 enum{
@@ -41,7 +43,8 @@ enum{
 	TIMER_FAST_PERIOD=1024,
 	INSTANT = 0,
 	MAX_DEPTH=32,
-	MAX_NODES=32
+	MAX_NODES=32,
+	TCT = 10
 };
 
 typedef nx_struct RoutingMsg

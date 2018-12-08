@@ -46,6 +46,7 @@ implementation
 	// local aggr values [32]
 	uint32_t children[5][MAX_NODES];
 	uint32_t values[5];
+	uint32_t old_values[5];
 
 	uint8_t aggr1;
 	uint8_t aggr2;
@@ -153,6 +154,7 @@ ___________________________________________________*/
 		uint8_t data_avg = 0;
 		uint8_t data_var = 0;
 		uint8_t var8_full;
+		uint8_t threshold;
 
 		Msg_64* m;
 
@@ -225,6 +227,7 @@ ___________________________________________________*/
 			aggr1 = (msg_type%100)/10;
 			packet_t = msg_type%10;
 			var8_full = 0;
+			threshold = 0;
 
 			dbg("AggrFunc","aggr1=%d,aggr2=%d,packet_t=%d\n",aggr1,aggr2,packet_t);
 
@@ -236,7 +239,12 @@ ___________________________________________________*/
 				for(iter=0;iter<MAX_NODES;iter++)
 					if(values[0] > children[0][iter]) 
 						values[0] = children[0][iter];
-				m->var8=values[0]; var8_full = 1;	
+
+				if(packet_t == TINA_8)
+					if(100*(values[0]-old_values[0]) > TCT*values[0])
+						{m->var8=values[0]; threshold = 1;}
+				else
+					m->var8=values[0]; var8_full = 1;
 			}
 			if(aggr1 == MAX || aggr2 == MAX)
 			{
@@ -246,7 +254,13 @@ ___________________________________________________*/
 				if(var8_full)
 					m->var8_2=values[1];
 				else
-					m->var8 = values[1]; var8_full = 1;
+				{
+					if(packet_t == TINA_8)
+						if(100*(values[1]-old_values[1])/values[1] > TCT)
+							{m->var8 = values[1]; threshold = 1;}
+					else
+						m->var8 = values[1]; var8_full = 1;
+				}
 			}
 			if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG ) 
 			{
@@ -255,14 +269,25 @@ ___________________________________________________*/
 				if(var8_full)
 					m->var8_2=values[2];
 				else 
-					m->var8 = values[2]; var8_full = 1;
+				{
+					if(packet_t == TINA_8)
+						if(100*(values[2]-old_values[2])/values[2] > TCT)
+							{m->var8 = values[2]; threshold = 1;}
+					else
+						m->var8 = values[2]; var8_full = 1;
+				}
 
 			}
 			if(aggr1 == SUM || aggr2 == SUM || aggr1 == AVG || aggr2 == AVG)
 			{	
 				for(iter=0;iter<MAX_NODES;iter++)
 					values[3] += children[3][iter];
-				m->var16=values[3];
+				if(packet_t == TINA_16)
+					if(100*(values[3]-old_values[3])/values[3] > TCT)
+						{m->var16=values[3]; threshold = 2;}
+				else
+						m->var16=values[3];
+				
 			}
 			if(packet_t == TYPE_56 || packet_t == TYPE_64)
 			{	
@@ -270,22 +295,63 @@ ___________________________________________________*/
 					values[4] += children[4][iter];
 				m->var32=values[4];
 			}
-			
+
+			if(packet_t == TINA_8 || packet_t == TINA_16)
+				for(iter=0;iter<5;iter++)
+					old_values[iter] = values[iter];
+
 			dbg("NotifyMsg" , "-EpochTimer.fired- Node: %d\n", TOS_NODE_ID);
 
 			dbg("AggrFunc","In ET.fired: var8:%d,var8_2:%d,var16:%d,var32:%d\n",m->var8,m->var8_2,m->var16,m->var32);
 
-			call NotifyAMPacket.setDestination(&tmp, parentID);
-			call NotifyPacket.setPayloadLength(&tmp, packet_t);
-					
-			if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
+			
+
+
+
+			if(packet_t != TINA_8 && packet_t != TINA_16)
 			{
-				if (call NotifySendQueue.size() == 1)
-				{	
-					dbg("NotifyMsg", "-NotifySendE- SendNotifyTask() posted.\n");
-					post sendNotifyTask();
+				call NotifyAMPacket.setDestination(&tmp, parentID);
+				call NotifyPacket.setPayloadLength(&tmp, packet_t);
+				if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
+				{
+					if (call NotifySendQueue.size() == 1)
+					{	
+						dbg("NotifyMsg", "-NotifySendE- SendNotifyTask() posted.\n");
+						post sendNotifyTask();
+					}
 				}
 			}
+			else
+			{
+				if(threshold == 1)
+				{
+					call NotifyAMPacket.setDestination(&tmp, parentID);
+					call NotifyPacket.setPayloadLength(&tmp, 1);
+					if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
+					{
+						if (call NotifySendQueue.size() == 1)
+						{	
+							dbg("NotifyMsg", "-NotifySendE- SendNotifyTask() posted.\n");
+							post sendNotifyTask();
+						}
+					}
+				}
+				else if(threshold == 2)
+				{
+					call NotifyAMPacket.setDestination(&tmp, parentID);
+					call NotifyPacket.setPayloadLength(&tmp, 2);
+					if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
+					{
+						if (call NotifySendQueue.size() == 1)
+						{	
+							dbg("NotifyMsg", "-NotifySendE- SendNotifyTask() posted.\n");
+							post sendNotifyTask();
+						}
+					}
+				}
+			}
+
+			
 		}
 	}
 
@@ -297,6 +363,7 @@ ___________________________________________________*/
 		message_t tmp;
 		error_t enqueueDone;
 		uint8_t num;
+		uint8_t tina;
 		RoutingMsg* mrpkt;
 
 		dbg("RoutingMsg", "-TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is %s \n",(RoutingSendBusy)?"Busy":"Free");
@@ -317,72 +384,90 @@ ___________________________________________________*/
 		/*NODE 0 - setup aggr func parameters*/
 		if(TOS_NODE_ID == 0)
 		{	
-			num = 2;
-			aggr1 = AVG;
-			aggr2 = SUM;
-			//call Seed.init((call RandomTimer.getNow()));
-			if(!num)
+
+			tina = 1;
+
+			if(tina)
 			{
-				//aggr1 = (call Random.rand16())%5;
-				aggr2 = 0;
+				aggr1 = MIN;
 				if(aggr1 == MIN)
-					msg_type = MIN2+TYPE_8;
+					msg_type = MIN2+TINA_8;
 				else if(aggr1 == MAX)
-					msg_type = MAX2+TYPE_8;
+					msg_type = MAX2+TINA_8;
 				else if(aggr1 == COUNT)
-					msg_type = COUNT2+TYPE_8;
+					msg_type = COUNT2+TINA_8;
 				else if(aggr1 == SUM)
-					msg_type = SUM2+TYPE_16;
-				else if(aggr1 == AVG)
-					msg_type = SC2+TYPE_24;
-				else
-					msg_type = SC2+TYPE_56;
+					msg_type = SUM2+TINA_16;
 			}
 			else
 			{
-				//aggr1 = (call Random.rand16())%5;
-				//aggr2 = (call Random.rand16())%5;
-				
-				if(aggr1 == SUM || aggr2 == SUM)
+				num = 2;
+				aggr1 = AVG;
+				aggr2 = SUM;
+				//call Seed.init((call RandomTimer.getNow()));
+				if(!num)
 				{
-					if(aggr1 == MIN || aggr2 == MIN)
-						msg_type = MIN1+SUM2+TYPE_24;
-					else if(aggr1 == MAX || aggr2 == MAX)
-						msg_type = MAX1+SUM2+TYPE_24;
-					else if(aggr1 == VAR || aggr2 == VAR)
-						msg_type = SC2+TYPE_56;
-					else 
+					//aggr1 = (call Random.rand16())%5;
+					aggr2 = 0;
+					if(aggr1 == MIN)
+						msg_type = MIN2+TYPE_8;
+					else if(aggr1 == MAX)
+						msg_type = MAX2+TYPE_8;
+					else if(aggr1 == COUNT)
+						msg_type = COUNT2+TYPE_8;
+					else if(aggr1 == SUM)
+						msg_type = SUM2+TYPE_16;
+					else if(aggr1 == AVG)
 						msg_type = SC2+TYPE_24;
-				}
-				else if(aggr1 == AVG || aggr2 == AVG)
-				{
-					if(aggr1 == MIN || aggr2 == MIN)
-						msg_type = MIN1+SC2+TYPE_32;
-					else if(aggr1 == MAX || aggr2 == MAX)
-						msg_type = MAX1+SC2+TYPE_32;
-					else if(aggr1 == VAR || aggr2 == VAR)
-						msg_type = SC2+TYPE_56;
-					else
-						msg_type = SC2+TYPE_24;
-				}
-				else if(aggr1 == VAR || aggr2 == VAR)
-				{
-					if(aggr1 == MIN || aggr2 == MIN)
-						msg_type = MIN1+SC2+TYPE_64;
-					else if(aggr1 == MAX || aggr2 == MAX)
-						msg_type = MAX1+SC2+TYPE_64;
 					else
 						msg_type = SC2+TYPE_56;
-				}
-				else if(aggr1 == COUNT || aggr2 == COUNT)
-				{
-					if(aggr1 == MIN || aggr2 == MIN)
-						msg_type = MIN1+COUNT2+TYPE_16;
-					else
-						msg_type = MAX1+COUNT2+TYPE_16;
 				}
 				else
-					msg_type = MIN1+MAX2+TYPE_16;
+				{
+					//aggr1 = (call Random.rand16())%5;
+					//aggr2 = (call Random.rand16())%5;
+					
+					if(aggr1 == SUM || aggr2 == SUM)
+					{
+						if(aggr1 == MIN || aggr2 == MIN)
+							msg_type = MIN1+SUM2+TYPE_24;
+						else if(aggr1 == MAX || aggr2 == MAX)
+							msg_type = MAX1+SUM2+TYPE_24;
+						else if(aggr1 == VAR || aggr2 == VAR)
+							msg_type = SC2+TYPE_56;
+						else 
+							msg_type = SC2+TYPE_24;
+					}
+					else if(aggr1 == AVG || aggr2 == AVG)
+					{
+						if(aggr1 == MIN || aggr2 == MIN)
+							msg_type = MIN1+SC2+TYPE_32;
+						else if(aggr1 == MAX || aggr2 == MAX)
+							msg_type = MAX1+SC2+TYPE_32;
+						else if(aggr1 == VAR || aggr2 == VAR)
+							msg_type = SC2+TYPE_56;
+						else
+							msg_type = SC2+TYPE_24;
+					}
+					else if(aggr1 == VAR || aggr2 == VAR)
+					{
+						if(aggr1 == MIN || aggr2 == MIN)
+							msg_type = MIN1+SC2+TYPE_64;
+						else if(aggr1 == MAX || aggr2 == MAX)
+							msg_type = MAX1+SC2+TYPE_64;
+						else
+							msg_type = SC2+TYPE_56;
+					}
+					else if(aggr1 == COUNT || aggr2 == COUNT)
+					{
+						if(aggr1 == MIN || aggr2 == MIN)
+							msg_type = MIN1+COUNT2+TYPE_16;
+						else
+							msg_type = MAX1+COUNT2+TYPE_16;
+					}
+					else
+						msg_type = MIN1+MAX2+TYPE_16;
+				}
 			}
 		}
 		atomic
