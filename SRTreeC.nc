@@ -161,7 +161,7 @@ ___________________________________________________*/
 		// Sense Data and store to local array
 		// raw_data = random(1-50)
 		call Seed.init((call RandomTimer.getNow())+TOS_NODE_ID);
-		raw_data=(call Random.rand16())%50;
+		raw_data=(call Random.rand16())%51;
 		
 		values[0]=raw_data;
 		values[1]=raw_data;
@@ -176,7 +176,7 @@ ___________________________________________________*/
 		if(TOS_NODE_ID==0)
 		{
 
-			dbg("SRTreeC", "\n_________________EPOCH___%u______________\n",roundCounter);
+			dbg("SRTreeC", "\n___________________________EPOCH___%u\n",roundCounter);
 
 			if(aggr1 == MIN || aggr2 == MIN)
 			{
@@ -209,7 +209,8 @@ ___________________________________________________*/
 			if(aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)
 			{
 				data_avg = values[3]/values[2];
-				dbg("SRTreeC", "AVG: %d\n",data_avg); 
+				if(aggr1 == AVG || aggr2 == AVG)
+					dbg("SRTreeC", "AVG: %d\n",data_avg); 
 			}
 			if(aggr1 == VAR || aggr2 == VAR)
 			{
@@ -241,10 +242,14 @@ ___________________________________________________*/
 						values[0] = children[0][iter];
 
 				if(packet_t == TINA_8)
-					if(100*(values[0]-old_values[0]) > TCT*values[0])
+				{
+					if(100*abs(values[0]-old_values[0]) > TCT*values[0])
 						{m->var8=values[0]; threshold = 1;}
+				}
 				else
+				{
 					m->var8=values[0]; var8_full = 1;
+				}
 			}
 			if(aggr1 == MAX || aggr2 == MAX)
 			{
@@ -256,10 +261,14 @@ ___________________________________________________*/
 				else
 				{
 					if(packet_t == TINA_8)
-						if(100*(values[1]-old_values[1])/values[1] > TCT)
+					{
+						if(100*abs(values[1]-old_values[1]) > TCT*values[1])
 							{m->var8 = values[1]; threshold = 1;}
+					}
 					else
+					{
 						m->var8 = values[1]; var8_full = 1;
+					}
 				}
 			}
 			if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG ) 
@@ -271,10 +280,14 @@ ___________________________________________________*/
 				else 
 				{
 					if(packet_t == TINA_8)
-						if(100*(values[2]-old_values[2])/values[2] > TCT)
+					{
+						if(100*abs(values[2]-old_values[2]) > TCT*values[2])
 							{m->var8 = values[2]; threshold = 1;}
+					}
 					else
+					{
 						m->var8 = values[2]; var8_full = 1;
+					}
 				}
 
 			}
@@ -283,10 +296,12 @@ ___________________________________________________*/
 				for(iter=0;iter<MAX_NODES;iter++)
 					values[3] += children[3][iter];
 				if(packet_t == TINA_16)
-					if(100*(values[3]-old_values[3])/values[3] > TCT)
+				{
+					if(100*abs(values[3]-old_values[3]) > TCT*values[3])
 						{m->var16=values[3]; threshold = 2;}
+				}
 				else
-						m->var16=values[3];
+					m->var16=values[3];
 				
 			}
 			if(packet_t == TYPE_56 || packet_t == TYPE_64)
@@ -310,6 +325,7 @@ ___________________________________________________*/
 
 			if(packet_t != TINA_8 && packet_t != TINA_16)
 			{
+				dbg("AggrFunc","TAG:send_packet %d bits\n",packet_t*8);
 				call NotifyAMPacket.setDestination(&tmp, parentID);
 				call NotifyPacket.setPayloadLength(&tmp, packet_t);
 				if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
@@ -325,6 +341,7 @@ ___________________________________________________*/
 			{
 				if(threshold == 1)
 				{
+					dbg("AggrFunc","TINA:send_packet 8 bits\n");
 					call NotifyAMPacket.setDestination(&tmp, parentID);
 					call NotifyPacket.setPayloadLength(&tmp, 1);
 					if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
@@ -338,6 +355,7 @@ ___________________________________________________*/
 				}
 				else if(threshold == 2)
 				{
+					dbg("AggrFunc","TINA:send_packet 16 bits\n");
 					call NotifyAMPacket.setDestination(&tmp, parentID);
 					call NotifyPacket.setPayloadLength(&tmp, 2);
 					if (call NotifySendQueue.enqueue(tmp)==SUCCESS)
@@ -362,8 +380,11 @@ ___________________________________________________*/
 	{
 		message_t tmp;
 		error_t enqueueDone;
-		uint8_t num;
+		uint8_t one_func;
 		uint8_t tina;
+		time_t t;
+		uint8_t r;
+		uint8_t iter;
 		RoutingMsg* mrpkt;
 
 		dbg("RoutingMsg", "-TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is %s \n",(RoutingSendBusy)?"Busy":"Free");
@@ -384,12 +405,20 @@ ___________________________________________________*/
 		/*NODE 0 - setup aggr func parameters*/
 		if(TOS_NODE_ID == 0)
 		{	
+			// TO SKEFTHKE H EYTYXIA!!! kai egrapse kai auto to sxolio
+			srand((unsigned)time(&t));
 
-			tina = 1;
 
+			tina = rand()%2;
 			if(tina)
 			{
-				aggr1 = MIN;
+				
+				do
+				{
+					aggr1 = (rand()%5)+1;
+				}
+				while(aggr1 == 4);
+				dbg("SRTreeC","this is TINA\n");
 				if(aggr1 == MIN)
 					msg_type = MIN2+TINA_8;
 				else if(aggr1 == MAX)
@@ -398,14 +427,21 @@ ___________________________________________________*/
 					msg_type = COUNT2+TINA_8;
 				else if(aggr1 == SUM)
 					msg_type = SUM2+TINA_16;
+				else
+					dbg("SRTreeC","aggr1=%d\n",aggr1);
 			}
 			else
 			{
-				num = 2;
-				aggr1 = AVG;
-				aggr2 = SUM;
+				one_func = rand()%2;
+				aggr1 = (rand()%6)+1;
+				do
+				{
+					aggr2 = (rand()%6)+1;
+				}
+				while(aggr2 == aggr1);
+				dbg("SRTreeC","this is TURNER\n");
 				//call Seed.init((call RandomTimer.getNow()));
-				if(!num)
+				if(!one_func)
 				{
 					//aggr1 = (call Random.rand16())%5;
 					aggr2 = 0;
@@ -740,15 +776,16 @@ ___________________________________________________*/
 
 		len= call NotifyPacket.payloadLength(&radioNotifyRecPkt);
 		
-		//dbg("SRTreeC","NotifyReceive..length=%d bits\n",len*8);
-		
-
-			
+		//dbg("SRTreeC","NotifyReceive..length=%d bits\n",len*8);	
 		mr = (Msg_64*) (call NotifyPacket.getPayload(&radioNotifyRecPkt,len));
 		dbg("AggrFunc","In NotifRec: var8:%d,var8_2:%d,var16:%d,var32:%d\n",mr->var8,mr->var8_2,mr->var16,mr->var32);			
 			
 		childID = call NotifyAMPacket.source(&radioNotifyRecPkt);
 		
+		aggr1 = msg_type/100;
+		aggr2 = (msg_type%100)/10;
+		packet_t = msg_type%10;
+
 		if(aggr1 == MIN || aggr2 == MIN)	//MIN
 		{
 			children[0][childID] = mr->var8;
@@ -759,14 +796,18 @@ ___________________________________________________*/
 			if(var8_full)
 				children[1][childID] = mr->var8_2;
 			else
+			{
 				children[1][childID] = mr->var8; var8_full = 1;
+			}
 		}
 		if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)	//COUNT
 		{
 			if(var8_full)
 				children[2][childID] = mr->var8_2;
 			else
+			{
 				children[2][childID] = mr->var8; var8_full = 1;
+			}
 		}
 		if(aggr1 == SUM || aggr2 == SUM || aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)	//SUM
 		{	
@@ -778,6 +819,7 @@ ___________________________________________________*/
 		}
 
 		for(iter=0;iter<10;iter++)
-			dbg("AggrFunc","children[%d]=%d\n",iter,children[4][iter]);
+			dbg("AggrFunc","children[%d]=%d\n",iter,children[2][iter]);
+		dbg("AggrFunc","_\n");
 	}
 }
