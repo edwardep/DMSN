@@ -43,7 +43,6 @@ implementation
 	uint8_t curdepth;
 	uint8_t parentID;
 
-	// local aggr values [32]
 	uint32_t children[5][MAX_NODES];
 	uint32_t values[5];
 	uint32_t old_values[5];
@@ -84,6 +83,7 @@ ___________________________________________________*/
 	event void Boot.booted()
 	{	
 		uint8_t i;
+
 		//RADIO INIT
 		call RadioControl.start();
 		call RandomTimer.startPeriodic(5000000);
@@ -106,7 +106,7 @@ ___________________________________________________*/
 			parentID=-1;
 			dbg("Boot", "-BootE- curdepth = %d  ,  parentID= %d \n", curdepth , parentID);
 		}
-		// MIN_ARRAY must be initialized with 255 insted of 0s
+		//MIN_ARRAY must be initialized with 255 instead of 0s
 		for(i=0;i<MAX_NODES;i++)
 			children[0][i] = -1;
 	}
@@ -155,24 +155,24 @@ ___________________________________________________*/
 		uint8_t data_var = 0;
 		uint8_t var8_full;
 		uint8_t threshold;
-
 		Msg_64* m;
 
 		// Sense Data and store to local array
-		// raw_data = random(1-50)
+		// raw_data = random [0-50]
 		call Seed.init((call RandomTimer.getNow())+TOS_NODE_ID);
 		raw_data=(call Random.rand16())%51;
-		
-		values[0]=raw_data;
-		values[1]=raw_data;
-		values[2]=1;
-		values[3]=raw_data;
-		values[4]=raw_data*raw_data;
 
-		//dbg("SRTreeC","raw_data:%d\n",raw_data);
+		values[MIN_VAL]		=raw_data;
+		values[MAX_VAL]		=raw_data;
+		values[COUNT_VAL]	=1;
+		values[SUM_VAL]		=raw_data;
+		values[SUM_SQ_VAL]	=raw_data*raw_data;
+
+		//dbg("AggrFunc","raw_data:%d\n",raw_data);
+		
 		// Aggregate subtree values
-		// if RootNode  -> Print_Data 
-		// else 		-> Forward Data to Parent
+		// if RootNode  -> Calculate and Print_Data 
+		// else 		-> Aggregate and Forward Data to Parent
 		if(TOS_NODE_ID==0)
 		{
 
@@ -181,42 +181,42 @@ ___________________________________________________*/
 			if(aggr1 == MIN || aggr2 == MIN)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
-					if(values[0] > children[0][iter]) 
-						values[0] = children[0][iter];
-				dbg("SRTreeC", "MIN: %d\n",values[0]); 
+					if(values[MIN_VAL] > children[MIN_VAL][iter]) 
+						values[MIN_VAL] = children[MIN_VAL][iter];
+				dbg("SRTreeC", "MIN: %d\n",values[MIN_VAL]); 
 			}
 			if(aggr1 == MAX || aggr2 == MAX)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
-					if(values[1] < children[1][iter]) 
-						values[1] = children[1][iter];
-				dbg("SRTreeC", "MAX: %d\n",values[1]); 
+					if(values[MAX_VAL] < children[MAX_VAL][iter]) 
+						values[MAX_VAL] = children[MAX_VAL][iter];
+				dbg("SRTreeC", "MAX: %d\n",values[MAX_VAL]); 
 			}
 			if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
-					values[2] += children[2][iter];
+					values[COUNT_VAL] += children[COUNT_VAL][iter];
 				if(aggr1 == COUNT || aggr2 == COUNT)
-					dbg("SRTreeC", "COUNT: %d\n",values[2]); 
+					dbg("SRTreeC", "COUNT: %d\n",values[COUNT_VAL]); 
 			}	
 			if(aggr1 == SUM || aggr2 == SUM || aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
-					values[3] += children[3][iter];
+					values[SUM_VAL] += children[SUM_VAL][iter];
 				if(aggr1 == SUM || aggr2 == SUM)
-					dbg("SRTreeC", "SUM: %d\n",values[3]);
+					dbg("SRTreeC", "SUM: %d\n",values[SUM_VAL]);
 			}	
 			if(aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)
 			{
-				data_avg = values[3]/values[2];
+				data_avg = values[SUM_VAL]/values[COUNT_VAL];
 				if(aggr1 == AVG || aggr2 == AVG)
 					dbg("SRTreeC", "AVG: %d\n",data_avg); 
 			}
 			if(aggr1 == VAR || aggr2 == VAR)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
-					values[4] += children[4][iter];
-				data_var = (values[4]/values[2])-(data_avg*data_avg);
+					values[SUM_SQ_VAL] += children[SUM_SQ_VAL][iter];
+				data_var = (values[SUM_SQ_VAL]/values[COUNT_VAL])-(data_avg*data_avg);
 				dbg("SRTreeC", "VAR: %d\n",data_var); 
 			}
 			
@@ -224,106 +224,125 @@ ___________________________________________________*/
 		}
 		else
 		{
+			// DECODE RoutingMsg 
 			aggr2 = msg_type/100;
 			aggr1 = (msg_type%100)/10;
 			packet_t = msg_type%10;
+
+			// init flags
 			var8_full = 0;
-			threshold = 0;
+			threshold = 0; 
 
 			dbg("AggrFunc","aggr1=%d,aggr2=%d,packet_t=%d\n",aggr1,aggr2,packet_t);
 
+
 			m = (Msg_64*) (call NotifyPacket.getPayload(&tmp, sizeof(Msg_64))); 
 
-
+			/***	-Aggregate values of all children to local array 'values[]'	
+					-Compare 'values[]' to TCT, if program was executed with TINA
+					-Add values[] to m->var
+						-if m->var already used ->> add values[] to m->var_2
+			***/
+			// MIN
 			if(aggr1 == MIN || aggr2 == MIN)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
-					if(values[0] > children[0][iter]) 
-						values[0] = children[0][iter];
+					if(values[MIN_VAL] > children[MIN_VAL][iter]) 
+						values[MIN_VAL] = children[MIN_VAL][iter];
 
 				if(packet_t == TINA_8)
 				{
-					if(100*abs(values[0]-old_values[0]) > TCT*values[0])
-						{m->var8=values[0]; threshold = 1;}
+					if(100*abs(values[MIN_VAL]-old_values[MIN_VAL]) > TCT*values[MIN_VAL])
+						{m->var8=values[MIN_VAL]; threshold = 1;}
 				}
 				else
 				{
-					m->var8=values[0]; var8_full = 1;
+					m->var8=values[MIN_VAL]; var8_full = 1;
 				}
 			}
+			// MAX
 			if(aggr1 == MAX || aggr2 == MAX)
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
-					if(values[1] < children[1][iter]) 
-						values[1] = children[1][iter];
+					if(values[MAX_VAL] < children[MAX_VAL][iter]) 
+						values[MAX_VAL] = children[MAX_VAL][iter];
 				if(var8_full)
-					m->var8_2=values[1];
+					m->var8_2=values[MAX_VAL];
 				else
 				{
 					if(packet_t == TINA_8)
 					{
-						if(100*abs(values[1]-old_values[1]) > TCT*values[1])
-							{m->var8 = values[1]; threshold = 1;}
+						if(100*abs(values[MAX_VAL]-old_values[MAX_VAL]) > TCT*values[MAX_VAL])
+							{m->var8 = values[MAX_VAL]; threshold = 1;}
 					}
 					else
 					{
-						m->var8 = values[1]; var8_full = 1;
+						m->var8 = values[MAX_VAL]; var8_full = 1;
 					}
 				}
 			}
+			// COUNT
 			if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG ) 
 			{
 				for(iter=0;iter<MAX_NODES;iter++)
-					values[2] += children[2][iter];
+					values[COUNT_VAL] += children[COUNT_VAL][iter];
 				if(var8_full)
-					m->var8_2=values[2];
+					m->var8_2=values[COUNT_VAL];
 				else 
 				{
 					if(packet_t == TINA_8)
 					{
-						if(100*abs(values[2]-old_values[2]) > TCT*values[2])
-							{m->var8 = values[2]; threshold = 1;}
+						if(100*abs(values[COUNT_VAL]-old_values[COUNT_VAL]) > TCT*values[COUNT_VAL])
+							{m->var8 = values[COUNT_VAL]; threshold = 1;}
 					}
 					else
 					{
-						m->var8 = values[2]; var8_full = 1;
+						m->var8 = values[COUNT_VAL]; var8_full = 1;
 					}
 				}
 
 			}
+			// SUM(X)
 			if(aggr1 == SUM || aggr2 == SUM || aggr1 == AVG || aggr2 == AVG)
 			{	
 				for(iter=0;iter<MAX_NODES;iter++)
-					values[3] += children[3][iter];
+					values[SUM_VAL] += children[SUM_VAL][iter];
 				if(packet_t == TINA_16)
 				{
-					if(100*abs(values[3]-old_values[3]) > TCT*values[3])
-						{m->var16=values[3]; threshold = 2;}
+					if(100*abs(values[SUM_VAL]-old_values[SUM_VAL]) > TCT*values[SUM_VAL])
+						{m->var16=values[SUM_VAL]; threshold = 2;}
 				}
 				else
-					m->var16=values[3];
+					m->var16=values[SUM_VAL];
 				
 			}
+			// SUM(X^2)
 			if(packet_t == TYPE_56 || packet_t == TYPE_64)
 			{	
 				for(iter=0;iter<MAX_NODES;iter++)
-					values[4] += children[4][iter];
-				m->var32=values[4];
+					values[SUM_SQ_VAL] += children[SUM_SQ_VAL][iter];
+				m->var32=values[SUM_SQ_VAL];
 			}
 
+			/***
+					-Copy values[] to old_values[]. (used for TCT check in TINA)
+			***/
 			if(packet_t == TINA_8 || packet_t == TINA_16)
 				for(iter=0;iter<5;iter++)
 					old_values[iter] = values[iter];
 
-			dbg("NotifyMsg" , "-EpochTimer.fired- Node: %d\n", TOS_NODE_ID);
 
+			dbg("NotifyMsg" , "-EpochTimer.fired- Node: %d\n", TOS_NODE_ID);
 			dbg("AggrFunc","In ET.fired: var8:%d,var8_2:%d,var16:%d,var32:%d\n",m->var8,m->var8_2,m->var16,m->var32);
 
 			
-
-
-
-			if(packet_t != TINA_8 && packet_t != TINA_16)
+			/***	-If TAG is selected
+						-enqueue packet of size (packet_t)
+					-If TINA is selected
+						-enqueue packet of size (8 or 16 bits)
+						-or do not enqueue (val* < TCT)
+			***/
+			if(packet_t != TINA_8 && packet_t != TINA_16)	//TAG packet
 			{
 				dbg("AggrFunc","TAG:send_packet %d bits\n",packet_t*8);
 				call NotifyAMPacket.setDestination(&tmp, parentID);
@@ -339,7 +358,7 @@ ___________________________________________________*/
 			}
 			else
 			{
-				if(threshold == 1)
+				if(threshold == 1)	// TINA packet type 1 (8 bits)
 				{
 					dbg("AggrFunc","TINA:send_packet 8 bits\n");
 					call NotifyAMPacket.setDestination(&tmp, parentID);
@@ -353,7 +372,7 @@ ___________________________________________________*/
 						}
 					}
 				}
-				else if(threshold == 2)
+				else if(threshold == 2)	//TINA packet type 2 (16 bits)
 				{
 					dbg("AggrFunc","TINA:send_packet 16 bits\n");
 					call NotifyAMPacket.setDestination(&tmp, parentID);
@@ -372,7 +391,6 @@ ___________________________________________________*/
 			
 		}
 	}
-
 /**
 	@BROADCASTING EVENT
 **/
@@ -383,8 +401,7 @@ ___________________________________________________*/
 		uint8_t one_func;
 		uint8_t tina;
 		time_t t;
-		uint8_t r;
-		uint8_t iter;
+
 		RoutingMsg* mrpkt;
 
 		dbg("RoutingMsg", "-TimerFiredE- RoutingMsgTimer fired!  RoutingRadio is %s \n",(RoutingSendBusy)?"Busy":"Free");
@@ -402,23 +419,23 @@ ___________________________________________________*/
 			return;
 		}
 
-		/*NODE 0 - setup aggr func parameters*/
+		/* NODE 0 - setup aggr func parameters */
 		if(TOS_NODE_ID == 0)
 		{	
-			// TO SKEFTHKE H EYTYXIA!!! kai egrapse kai auto to sxolio
 			srand((unsigned)time(&t));
-
 
 			tina = rand()%2;
 			if(tina)
-			{
-				
+			{	
+				dbg("SRTreeC","TINA\n");
+				// MIN:1,MAX:2,COUNT:3,SUM:5 => 4 is not an option! (AVG:4)
 				do
 				{
 					aggr1 = (rand()%5)+1;
 				}
 				while(aggr1 == 4);
-				dbg("SRTreeC","this is TINA\n");
+				
+				// ENCODE Aggregate Functions
 				if(aggr1 == MIN)
 					msg_type = MIN2+TINA_8;
 				else if(aggr1 == MAX)
@@ -427,24 +444,27 @@ ___________________________________________________*/
 					msg_type = COUNT2+TINA_8;
 				else if(aggr1 == SUM)
 					msg_type = SUM2+TINA_16;
-				else
-					dbg("SRTreeC","aggr1=%d\n",aggr1);
 			}
-			else
+			else //if TAG
 			{
-				one_func = rand()%2;
-				aggr1 = (rand()%6)+1;
+				dbg("SRTreeC","TAG\n");
+
+				one_func = rand()%2; //select num of funcs
+				aggr1 = (rand()%6)+1; 
+
+				// make sure it doesnt select the same function twice
 				do
 				{
 					aggr2 = (rand()%6)+1;
 				}
 				while(aggr2 == aggr1);
-				dbg("SRTreeC","this is TURNER\n");
-				//call Seed.init((call RandomTimer.getNow()));
-				if(!one_func)
+
+				// 1 aggregate function
+				if(one_func)
 				{
-					//aggr1 = (call Random.rand16())%5;
-					aggr2 = 0;
+					aggr2 = 0; //unused
+
+					// ENCODE Aggregate Function
 					if(aggr1 == MIN)
 						msg_type = MIN2+TYPE_8;
 					else if(aggr1 == MAX)
@@ -458,11 +478,9 @@ ___________________________________________________*/
 					else
 						msg_type = SC2+TYPE_56;
 				}
-				else
+				else // 2 aggregate functions
 				{
-					//aggr1 = (call Random.rand16())%5;
-					//aggr2 = (call Random.rand16())%5;
-					
+					// ENCODE Aggregate Functions	
 					if(aggr1 == SUM || aggr2 == SUM)
 					{
 						if(aggr1 == MIN || aggr2 == MIN)
@@ -506,6 +524,7 @@ ___________________________________________________*/
 				}
 			}
 		}
+
 		atomic
 		{
 			mrpkt->depth = curdepth;
@@ -570,8 +589,6 @@ ___________________________________________________*/
 		
 		msource = call NotifyAMPacket.source(msg);
 
-		//dbg("NotifyMsg", "-NotifyRecE- count: %u, Source: %u \n",((Msg_64*) payload)->count_value, msource);
-
 		atomic{ memcpy(&tmp,msg,sizeof(message_t));}
 
 		enqueueDone = call NotifyReceiveQueue.enqueue(tmp);
@@ -603,7 +620,6 @@ ___________________________________________________*/
 		// Receive Routing Msg Top-Down
 		if(curdepth > (((RoutingMsg*) payload)->depth))
 		{
-	
 			atomic{ memcpy(&tmp,msg,sizeof(message_t));}
 
 			enqueueDone=call RoutingReceiveQueue.enqueue(tmp);
@@ -667,6 +683,7 @@ ___________________________________________________*/
 			dbg("RoutingMsg","-RoutingSendT- Send failed!\n");
 		}
 
+		// Start Epoch Timer for Root Node *(other nodes start their timers in receiveRoutingTask())
 		if(TOS_NODE_ID==0)
 		{
 			call EpochTimer.startPeriodic(EPOCH_MILLI);
@@ -686,7 +703,7 @@ ___________________________________________________*/
 		
 		len= call RoutingPacket.payloadLength(&radioRoutingRecPkt);
 		
-		//if received msg is RoutingMsg		
+		//if received msg is RoutingMsg
 		if(len == sizeof(RoutingMsg))
 		{
 			RoutingMsg * mpkt = (RoutingMsg*) (call RoutingPacket.getPayload(&radioRoutingRecPkt,len));
@@ -694,8 +711,12 @@ ___________________________________________________*/
 			// set Parent and Depth
 			parentID= call RoutingAMPacket.source(&radioRoutingRecPkt);
 			curdepth= mpkt->depth + 1;
+
+			// save encoded msg from ROOT_NODE (aggregate funcs and packet_type)
 			msg_type= mpkt->aggr;
+
 			dbg("AggrFunc","msg_type:%d\n",msg_type);
+
 			// generate random number for conflict avoidance
 			call Seed.init((call RandomTimer.getNow())+TOS_NODE_ID);
 			random_interval = ((call Random.rand16())%MAX_NODES)*10;
@@ -740,11 +761,6 @@ ___________________________________________________*/
 		mlen=call NotifyPacket.payloadLength(&radioNotifySendPkt);
 		mpayload= call NotifyPacket.getPayload(&radioNotifySendPkt,mlen);
 		
-		// if(mlen!= 16)
-		// {
-		// 	dbg("NotifyMsg", "-NotifySendT- Unknown message.\n");
-		// 	return;
-		// }
 		// Unicast to Parent
 		mdest= call NotifyAMPacket.destination(&radioNotifySendPkt);
 		// Send Packet over Radio
@@ -770,28 +786,36 @@ ___________________________________________________*/
 		Msg_64* mr;
 		uint8_t var8_full = 0;
 		uint8_t childID;
-		uint8_t iter;
 
 		radioNotifyRecPkt= call NotifyReceiveQueue.dequeue();
 
 		len= call NotifyPacket.payloadLength(&radioNotifyRecPkt);
 		
-		//dbg("SRTreeC","NotifyReceive..length=%d bits\n",len*8);	
+		dbg("AggrFunc","NotifyReceive..length=%d bits\n",len*8);
+
 		mr = (Msg_64*) (call NotifyPacket.getPayload(&radioNotifyRecPkt,len));
 		dbg("AggrFunc","In NotifRec: var8:%d,var8_2:%d,var16:%d,var32:%d\n",mr->var8,mr->var8_2,mr->var16,mr->var32);			
-			
+		
 		childID = call NotifyAMPacket.source(&radioNotifyRecPkt);
 		
+		// DECODE RoutingMsg
 		aggr1 = msg_type/100;
 		aggr2 = (msg_type%100)/10;
 		packet_t = msg_type%10;
 
-		if(aggr1 == MIN || aggr2 == MIN)	//MIN
+		/***	-Write received var to children[Sender][AggrFunction]
+				-if var1 was already used
+					-use var2
+		***/
+
+		// MIN
+		if(aggr1 == MIN || aggr2 == MIN)	
 		{
 			children[0][childID] = mr->var8;
 			var8_full = 1; 
 		}
-		if(aggr1 == MAX || aggr2 == MAX)	//MAX
+		// MAX
+		if(aggr1 == MAX || aggr2 == MAX)	
 		{
 			if(var8_full)
 				children[1][childID] = mr->var8_2;
@@ -800,7 +824,8 @@ ___________________________________________________*/
 				children[1][childID] = mr->var8; var8_full = 1;
 			}
 		}
-		if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)	//COUNT
+		// COUNT
+		if(aggr1 == COUNT || aggr2 == COUNT || aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)
 		{
 			if(var8_full)
 				children[2][childID] = mr->var8_2;
@@ -809,17 +834,16 @@ ___________________________________________________*/
 				children[2][childID] = mr->var8; var8_full = 1;
 			}
 		}
-		if(aggr1 == SUM || aggr2 == SUM || aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)	//SUM
+		// SUM(X)
+		if(aggr1 == SUM || aggr2 == SUM || aggr1 == AVG || aggr2 == AVG || aggr1 == VAR || aggr2 == VAR)	
 		{	
 			children[3][childID] = mr->var16; 
 		}
-		if(packet_t == TYPE_56 || packet_t == TYPE_64 || aggr1 == VAR || aggr2 == VAR)		//SUM2
+		// SUM(X^2)
+		if(packet_t == TYPE_56 || packet_t == TYPE_64 || aggr1 == VAR || aggr2 == VAR)	
 		{	
 			children[4][childID] = mr->var32;
 		}
 
-		for(iter=0;iter<10;iter++)
-			dbg("AggrFunc","children[%d]=%d\n",iter,children[2][iter]);
-		dbg("AggrFunc","_\n");
 	}
 }

@@ -6,6 +6,13 @@
 #include <time.h>
 
 enum{
+	MIN_VAL = 0,
+	MAX_VAL = 1,
+	COUNT_VAL = 2,
+	SUM_VAL = 3,
+	SUM_SQ_VAL = 4
+};
+enum{
 	MIN = 1,
 	MAX = 2,
 	COUNT = 3,
@@ -34,7 +41,6 @@ enum{
 	TINA_8 = 5,
 	TINA_16 = 6
 };
-
 enum{
 	SENDER_QUEUE_SIZE=5,
 	RECEIVER_QUEUE_SIZE=3,
