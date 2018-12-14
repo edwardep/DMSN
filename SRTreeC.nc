@@ -424,7 +424,7 @@ ___________________________________________________*/
 		{	
 			srand((unsigned)time(&t));
 
-			tina = 0;//rand()%2;
+			tina = rand()%2;
 			if(tina)
 			{	
 				dbg("SRTreeC","TINA\n");
@@ -449,7 +449,7 @@ ___________________________________________________*/
 			{
 				dbg("SRTreeC","TAG\n");
 
-				one_func = 1;//rand()%2; //select num of funcs
+				one_func = rand()%2; //select num of funcs
 				aggr1 = (rand()%6)+1; 
 
 				// make sure it doesnt select the same function twice
